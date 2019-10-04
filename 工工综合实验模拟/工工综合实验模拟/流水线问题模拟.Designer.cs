@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class 医院问题模拟
+    partial class 流水线问题模拟
     {
         /// <summary>
         /// Required designer variable.
@@ -33,22 +33,22 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(312, 354);
+            this.button1.Location = new System.Drawing.Point(363, 332);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(141, 55);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
             this.button1.Text = "开始模拟";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
-            // 医院问题模拟
+            // 流水线问题模拟
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button1);
-            this.Name = "医院问题模拟";
-            this.Text = "医院问题模拟";
+            this.Name = "流水线问题模拟";
+            this.Text = " ";
             this.ResumeLayout(false);
 
         }
