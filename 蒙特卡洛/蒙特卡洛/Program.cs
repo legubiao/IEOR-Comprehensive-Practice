@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace 工工综合实验模拟
+namespace 蒙特卡洛
 {
     static class Program
     {
@@ -16,10 +16,7 @@ namespace 工工综合实验模拟
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            模拟主界面 mainForm = new 模拟主界面();
-            mainForm.StartPosition = FormStartPosition.CenterScreen;
-            mainForm.Show();
-            Application.Run();
+            Application.Run(new 主界面());
         }
     }
 }

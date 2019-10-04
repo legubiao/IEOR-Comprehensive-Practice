@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "蒙特卡洛", "蒙特卡洛\蒙特卡洛.csproj", "{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "蒙特卡洛安装包", "蒙特卡洛安装包\蒙特卡洛安装包.vdproj", "{163485EA-424C-4EC5-8144-6CA8ADCFB969}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|ARM.Build.0 = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|x64.Build.0 = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Debug|x86.Build.0 = Debug|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|ARM.ActiveCfg = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|ARM.Build.0 = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|ARM64.Build.0 = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|x64.ActiveCfg = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|x64.Build.0 = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|x86.ActiveCfg = Release|Any CPU
+		{22000C3C-98E5-40AC-8825-AA1BCBDD9B38}.Release|x86.Build.0 = Release|Any CPU
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Debug|Any CPU.ActiveCfg = Debug
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Debug|ARM.ActiveCfg = Debug
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Debug|ARM64.ActiveCfg = Debug
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Debug|x64.ActiveCfg = Debug
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Debug|x86.ActiveCfg = Debug
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Release|Any CPU.ActiveCfg = Release
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Release|ARM.ActiveCfg = Release
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Release|ARM64.ActiveCfg = Release
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Release|x64.ActiveCfg = Release
+		{163485EA-424C-4EC5-8144-6CA8ADCFB969}.Release|x86.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5DF61F9-30AB-485A-8674-6993D2F2428C}
+	EndGlobalSection
+EndGlobal
