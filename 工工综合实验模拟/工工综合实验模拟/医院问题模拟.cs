@@ -10,7 +10,32 @@ using System.Windows.Forms;
 
 namespace 工工综合实验模拟
 {
-    class Patient
+    public partial class 医院问题模拟 : Form
+    {
+        public 模拟主界面 returnForm = null;
+        public 医院问题模拟(模拟主界面 mainForm)
+        {
+            this.returnForm = mainForm;
+            InitializeComponent();
+
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            this.returnForm.Visible = true;
+            this.Close();
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+
+        }
+        class Patient
     {
         public double arriveTime;
         public double onRoadTime;
@@ -188,7 +213,7 @@ namespace 工工综合实验模拟
             {
                 events.Append(temp_event);
             }
-            patientQueue.Append(new Patient(time,RandExp(2)));
+            patientQueue.Append(new Patient(time,RandExp(2)));  
         }
         void selfPatientArrive(int hospital)                    //自行病人到达函数
         {
@@ -199,30 +224,6 @@ namespace 工工综合实验模拟
 
         }
     }
-    public partial class 医院问题模拟 : Form
-    {
-        public 模拟主界面 returnForm = null;
-        public 医院问题模拟(模拟主界面 mainForm)
-        {
-            this.returnForm = mainForm;
-            InitializeComponent();
 
-        }
-        
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void Button2_Click(object sender, EventArgs e)
-        {
-            this.returnForm.Visible = true;
-            this.Close();
-        }
-
-        private void Button3_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
