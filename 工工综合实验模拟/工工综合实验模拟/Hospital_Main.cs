@@ -14,6 +14,14 @@ namespace 工工综合实验模拟
     public partial class Hospital_Main : Form
     {
         public Main_Form returnForm = null;
+        public double[,] hosInfo = new double[,]
+        {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
+                   {3.4, 0.42, 40, 13, 13},
+                   {3.6, 0.5,  40, 15, 15},
+                   {3.7, 0.55, 40, 20, 20},
+                   {4,   0.55, 40, 20, 20},
+                   {3.6, 0.4,  40, 18, 18}
+        };
         public Hospital_Main(Main_Form mainForm)
         {
             this.returnForm = mainForm;
@@ -32,15 +40,6 @@ namespace 工工综合实验模拟
                             {2.8, 2.5, 1.8, 2.3, 3.1},
                             {2,   2.2, 2.8, 3,   2.3},
                             {2.5, 2.6, 2,   2.5, 2.1}
-            };
-            double[,] hosInfo = new double[,]
-            {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
-                            {3.4, 0.42, 40, 13},
-                            {3.6, 0.5,  40, 15},
-                            {3.7, 0.46, 40, 20},
-                            {3.7, 0.55, 40, 20},
-                            {4,   0.55, 40, 20},
-                            {3.6, 0.4,  40, 18}
             };
 
             double[,] sent_Ratio = Get_Ratio();
@@ -90,7 +89,7 @@ namespace 工工综合实验模拟
             this.Close();
         }
         private double[,] Get_Ratio()
-        {
+        {   //改变派往医院的比例的同时，改变医院的床位数目
             double[,] sentRatio = new double[4, 5];
             for (int i = 1; i != 5; i ++)
             {
@@ -100,12 +99,21 @@ namespace 工工综合实验模拟
                     string Name = "Ratio" + i + "_" + j;
                     Control[] ratio = this.Controls.Find(Name, true);
                     sentRatio[i-1, j-1] = double.Parse(ratio[0].Text);
-                    total_j += sentRatio[i - 1, j - 1];
+                    total_j += sentRatio[i - 1, j - 1];                                       
                 }
                 for (int j = 1; j != 6; j++)
                 {
                     sentRatio[i - 1, j-1] = sentRatio[i - 1, j-1] / total_j;
                     this.Controls.Find("Ratio" + i + "_" + j, true)[0].Text = sentRatio[i - 1, j-1].ToString("f3");
+                }
+            }
+            for (int i = 0; i != 5; i++)
+            {
+                this.hosInfo[i, 3] = double.Parse(this.Controls.Find("Bed" + (i+1), true)[0].Text);
+                if (this.hosInfo[i, 3] > this.hosInfo[i, 2])
+                {
+                    this.hosInfo[i, 3] = this.hosInfo[i, 2];
+                    this.Controls.Find("Bed" + (i+1), true)[0].Text = this.hosInfo[i, 2].ToString();
                 }
             }
             return (sentRatio);
@@ -120,9 +128,13 @@ namespace 工工综合实验模拟
                 for (int j = 1; j != 6; j++)
                 {
                     string Name = "Ratio" + i + "_" + j;
-                    this.Controls.Find(Name, true)[0].Text = "0.2";
-                }
-                this.Controls.Find("Bed" + i, true)[0].Text = "40";
+                    this.Controls.Find(Name, true)[0].Text = "0.200";
+                }               
+            }
+            //床位复位
+            for(int i=0;i!=5; i++)
+            {
+                this.Controls.Find("Bed" + (i+1), true)[0].Text = this.hosInfo[i, 4].ToString();
             }
             stiTimeBox.Text = "100";
             stiNumBox.Text = "1";
@@ -434,7 +446,7 @@ namespace 工工综合实验模拟
             this.hosInfo = HosInfo;
             this.sentRatio = SentRatio;
             this.total_service_time = total_service_time;
-            this.bed_number = (int)hosInfo[hospital, 2];
+            this.bed_number = (int)hosInfo[hospital, 3];
             this.total_stay_time = 0;
             total_service_time = 0;
 

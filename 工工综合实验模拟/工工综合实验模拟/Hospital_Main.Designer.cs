@@ -321,7 +321,7 @@
             this.Bed5.Name = "Bed5";
             this.Bed5.Size = new System.Drawing.Size(76, 21);
             this.Bed5.TabIndex = 65;
-            this.Bed5.Text = "40";
+            this.Bed5.Text = "18";
             // 
             // Bed4
             // 
@@ -330,7 +330,7 @@
             this.Bed4.Name = "Bed4";
             this.Bed4.Size = new System.Drawing.Size(76, 21);
             this.Bed4.TabIndex = 64;
-            this.Bed4.Text = "40";
+            this.Bed4.Text = "20";
             // 
             // Bed3
             // 
@@ -339,7 +339,7 @@
             this.Bed3.Name = "Bed3";
             this.Bed3.Size = new System.Drawing.Size(76, 21);
             this.Bed3.TabIndex = 63;
-            this.Bed3.Text = "40";
+            this.Bed3.Text = "20";
             // 
             // Bed2
             // 
@@ -348,7 +348,7 @@
             this.Bed2.Name = "Bed2";
             this.Bed2.Size = new System.Drawing.Size(76, 21);
             this.Bed2.TabIndex = 62;
-            this.Bed2.Text = "40";
+            this.Bed2.Text = "15";
             // 
             // Bed1
             // 
@@ -357,7 +357,7 @@
             this.Bed1.Name = "Bed1";
             this.Bed1.Size = new System.Drawing.Size(76, 21);
             this.Bed1.TabIndex = 61;
-            this.Bed1.Text = "40";
+            this.Bed1.Text = "13";
             // 
             // panel1
             // 
