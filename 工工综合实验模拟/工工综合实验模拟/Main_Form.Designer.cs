@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class 模拟主界面
+    partial class Main_Form
     {
         /// <summary>
         /// 必需的设计器变量。

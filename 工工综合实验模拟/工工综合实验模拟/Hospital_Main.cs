@@ -11,10 +11,10 @@ using System.Collections;
 
 namespace 工工综合实验模拟
 {
-    public partial class 医院问题模拟 : Form
+    public partial class Hospital_Main : Form
     {
-        public 模拟主界面 returnForm = null;
-        public 医院问题模拟(模拟主界面 mainForm)
+        public Main_Form returnForm = null;
+        public Hospital_Main(Main_Form mainForm)
         {
             this.returnForm = mainForm;
             InitializeComponent();
@@ -22,12 +22,66 @@ namespace 工工综合实验模拟
 
         private void Button1_Click(object sender, EventArgs e)
         {   //点击“单次模拟”进行一次模拟，观察模拟分布
-            int total_service_time = 100;                           // 单次模拟时间
-            int simulate_num = 5;                                   // 模拟次数
+            int total_service_time = int.Parse(stiTimeBox.Text);    // 单次模拟时间
+            int simulate_num = int.Parse(stiNumBox.Text);           // 模拟次数
 
-            QueueSystem system = new QueueSystem(total_service_time, 0);
-            system.stimulate(simulate_num);
-            textBox21.Text = system.avg_stay_time.ToString();
+            double[] patientIn = new double[] { 2.8, 2.2, 3.4, 2.5 };
+            double[,] patient2Hos = new double[,]
+            {   //从救护站转移到医院的参数
+                            {2.2, 2,   2.4, 1,   1.5} ,
+                            {2.8, 2.5, 1.8, 2.3, 3.1},
+                            {2,   2.2, 2.8, 3,   2.3},
+                            {2.5, 2.6, 2,   2.5, 2.1}
+            };
+            double[,] hosInfo = new double[,]
+            {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
+                            {3.4, 0.42, 40, 13},
+                            {3.6, 0.5,  40, 15},
+                            {3.7, 0.46, 40, 20},
+                            {3.7, 0.55, 40, 20},
+                            {4,   0.55, 40, 20},
+                            {3.6, 0.4,  40, 18}
+            };
+
+            double[,] sent_Ratio = Get_Ratio();
+            bool isValid = true;
+            for (int i = 0; i != 5; i++)
+            {
+                double totalRatio_i = 0;
+                for (int j = 0; j !=4; j++)
+                {
+                    totalRatio_i += sent_Ratio[j, i]*patientIn[j];
+                }
+                totalRatio_i += hosInfo[i, 0];
+                if (totalRatio_i > hosInfo[i,1]* hosInfo[i,2])
+                {
+                    MessageBox.Show("比例会造成无限队列，请重新输入");
+                    isValid = false;
+                }
+            }
+
+            if(isValid)
+            {
+                QueueSystem system = new QueueSystem(total_service_time, sent_Ratio,hosInfo,patientIn);
+                system.stimulate(simulate_num, 0);
+
+                double[] avg_Stay_Time = new double[5];
+                for (int i = 0; i != 5; i++)
+                {
+                    system.stimulate(simulate_num, i);
+                    avg_Stay_Time[i] = system.avg_stay_time;
+                }
+                //如果仅运行一次，则弹出运行一次界面
+                if (simulate_num == 1)
+                {
+                    Hospital_Once Output1 = new Hospital_Once(this, avg_Stay_Time)
+                    {
+                        StartPosition = FormStartPosition.CenterScreen
+                    };
+                    this.Hide();
+                    Output1.Show();
+                }
+            }
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -35,10 +89,43 @@ namespace 工工综合实验模拟
             this.returnForm.Visible = true;
             this.Close();
         }
+        private double[,] Get_Ratio()
+        {
+            double[,] sentRatio = new double[4, 5];
+            for (int i = 1; i != 5; i ++)
+            {
+                double total_j = 0;
+                for(int j =1; j!=6;j++)
+                {
+                    string Name = "Ratio" + i + "_" + j;
+                    Control[] ratio = this.Controls.Find(Name, true);
+                    sentRatio[i-1, j-1] = double.Parse(ratio[0].Text);
+                    total_j += sentRatio[i - 1, j - 1];
+                }
+                for (int j = 1; j != 6; j++)
+                {
+                    sentRatio[i - 1, j-1] = sentRatio[i - 1, j-1] / total_j;
+                    this.Controls.Find("Ratio" + i + "_" + j, true)[0].Text = sentRatio[i - 1, j-1].ToString("f3");
+                }
+            }
+            return (sentRatio);
+        }
 
         private void Button3_Click(object sender, EventArgs e)
         {
-
+            //比例复位
+            for (int i = 1; i != 5; i++)
+            {
+                double total_j = 0;
+                for (int j = 1; j != 6; j++)
+                {
+                    string Name = "Ratio" + i + "_" + j;
+                    this.Controls.Find(Name, true)[0].Text = "0.2";
+                }
+                this.Controls.Find("Bed" + i, true)[0].Text = "40";
+            }
+            stiTimeBox.Text = "100";
+            stiNumBox.Text = "1";
         }
     }
 
@@ -103,31 +190,16 @@ namespace 工工综合实验模拟
     }
     class QueueSystem
     {
-        double[]    patientIn = new double[] { 2.8, 2.2, 3.4, 2.5 };
-            //四个救护站病人到达的参数
-        double[,]   patient2Hos = new double[,]
-        {   //从救护站转移到医院的参数
-                {2.2, 2,   2.4, 1,   1.5} ,
-                {2.8, 2.5, 1.8, 2.3, 3.1},
-                {2,   2.2, 2.8, 3,   2.3},
-                {2.5, 2.6, 2,   2.5, 2.1}
-        };
+        double[,] sentRatio;                //站点往医院送病人的比例
+        double[,] hosInfo;                  //医院的基本参数
 
-        double[,] hosInfo = new double[,]
-        {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
-                {3.4, 0.42, 40, 13},
-                {3.6, 0.5,  40, 15},
-                {3.7, 0.46, 40, 20},
-                {3.7, 0.55, 40, 20},
-                {4,   0.55, 40, 20},
-                {3.6, 0.4,  40, 18}
-        };
+
 
         private double  total_service_time; //总的服务时间
         private int     total_patients;     //总的病人数目
         private double  total_stay_time;    //总的等待时间
         private int     hospital;           //所属医院编号
-        private int     bed_number;             //医院床位数目
+        private int     bed_number;         //医院床位数目
         public double  avg_stay_time;       //平均时间
         public double  avg_costomers;       //平均病人数目
 
@@ -138,13 +210,6 @@ namespace 工工综合实验模拟
         public ArrayList events = new ArrayList();
         public Event currentEvent;
         public double[] lastArrive = new double[] { 0, 0, 0, 0 };
-        public double[,] sentRatio = new double[,]
-        {   //由救护站送往医院的比例，需要外部给定
-            { 0.2, 0.3, 0.1, 0.2, 0.2},
-            { 0.2, 0.2, 0.2, 0.2, 0.2},
-            { 0.2, 0.3, 0.1, 0.3, 0.1},
-            { 0.2, 0.3, 0.1, 0.2, 0.2} 
-        };
         public ArrayList adjustLambda = new ArrayList();
 
         public double RandExp(double const_a)                           //此处的const_a是指数分布的那个参数λ
@@ -363,10 +428,12 @@ namespace 工工综合实验模拟
             return -1;
         }
 
-        public QueueSystem(double total_service_time, int hospital)     //构造函数
+        public QueueSystem(double total_service_time, double[,] SentRatio,double[,] HosInfo,double[] patientIn)                   //构造函数
         {
+
+            this.hosInfo = HosInfo;
+            this.sentRatio = SentRatio;
             this.total_service_time = total_service_time;
-            this.hospital = hospital;
             this.bed_number = (int)hosInfo[hospital, 2];
             this.total_stay_time = 0;
             total_service_time = 0;
@@ -382,8 +449,9 @@ namespace 工工综合实验模拟
                 this.adjustLambda.Add(lambda_i);
             }
         }
-        public void stimulate(int stimulate_num)
+        public void stimulate(int stimulate_num,int hospital)
         {
+            this.hospital = hospital;
             double sum = 0;                                             //sum为多次模拟中病人平均逗留时间之和
             for (int i = 0; i != stimulate_num; i++)
             {
@@ -393,6 +461,9 @@ namespace 工工综合实验模拟
             //计算多次模拟的平均病人逗留时间和病人数目；
             avg_stay_time = sum / stimulate_num;
             avg_costomers = total_patients / (total_service_time * stimulate_num);
+
+            total_stay_time = 0;
+            total_patients = 0;
         }
     }
 

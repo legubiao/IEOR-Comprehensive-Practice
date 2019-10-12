@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace 工工综合实验模拟
 {
-    public partial class 模拟主界面 : Form
+    public partial class Main_Form : Form
     {
-        public 模拟主界面()
+        public Main_Form()
         {
             InitializeComponent();
         }
@@ -20,7 +20,7 @@ namespace 工工综合实验模拟
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            医院问题模拟 hospital = new 医院问题模拟(this)
+            Hospital_Main hospital = new Hospital_Main(this)
             {
                 StartPosition = FormStartPosition.CenterScreen
             };
