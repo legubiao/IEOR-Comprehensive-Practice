@@ -18,12 +18,16 @@ namespace 工工综合实验模拟
         {
             this.returnForm = mainForm;
             InitializeComponent();
-
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {   //点击“单次模拟”进行一次模拟，观察模拟分布
+            int total_service_time = 100;                           // 单次模拟时间
+            int simulate_num = 5;                                   // 模拟次数
 
+            QueueSystem system = new QueueSystem(total_service_time, 0);
+            system.stimulate(simulate_num);
+            textBox21.Text = system.avg_stay_time.ToString();
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -62,7 +66,7 @@ namespace 工工综合实验模拟
     {
         private Patient patient;
         private BedStatus status;
-        HospitalBed()
+        public HospitalBed()
         { //构造函数，初始时设置床位为空闲
             status = BedStatus.IDLE;
         }
@@ -123,9 +127,9 @@ namespace 工工综合实验模拟
         private int     total_patients;     //总的病人数目
         private double  total_stay_time;    //总的等待时间
         private int     hospital;           //所属医院编号
-        private int     bed_number;         //窗口数目
-        private double  avg_stay_time;      //平均时间
-        private double  avg_costomers;      //平均病人数目
+        private int     bed_number;             //医院床位数目
+        public double  avg_stay_time;       //平均时间
+        public double  avg_costomers;       //平均病人数目
 
         public HospitalBed [] beds;
         public ArrayList CarPatientQueue = new ArrayList();
@@ -136,11 +140,12 @@ namespace 工工综合实验模拟
         public double[] lastArrive = new double[] { 0, 0, 0, 0 };
         public double[,] sentRatio = new double[,]
         {   //由救护站送往医院的比例，需要外部给定
-            { 0.2, 0.5, 0.6, 0.8, 1},
-            { 0.2, 0.5, 0.6, 0.8, 1},
-            { 0.2, 0.5, 0.6, 0.8, 1},
-            { 0.2, 0.5, 0.6, 0.8, 1} 
+            { 0.2, 0.3, 0.1, 0.2, 0.2},
+            { 0.2, 0.2, 0.2, 0.2, 0.2},
+            { 0.2, 0.3, 0.1, 0.3, 0.1},
+            { 0.2, 0.3, 0.1, 0.2, 0.2} 
         };
+        public ArrayList adjustLambda = new ArrayList();
 
         public double RandExp(double const_a)                           //此处的const_a是指数分布的那个参数λ
         {   //生成指数分布的随机数
@@ -165,26 +170,41 @@ namespace 工工综合实验模拟
         }
         void addEvent(ArrayList list,Event @event)
         {
-            for (int i = 0; i != list.Count; i++)
+            if (@event.occur_time > ((Event)list[list.Count-1]).occur_time)
             {
-                if (((Event)list[i]).occur_time > @event.occur_time)
+                list.Add(@event);
+            }
+            else
+            {
+                for (int i = 0; i != list.Count; i++)
                 {
-                    list.Insert(i, @event);
-                    break;
+                    if (((Event)list[i]).occur_time > @event.occur_time)
+                    {
+                        list.Insert(i, @event);
+                        break;
+                    }
                 }
             }
         }
         void init()                                                     //初始化函数，会生成两种类型各一个到达事件
         {
+            events.Clear();
             events.Add(new Event(0,-1));                                //救护车病人到达事件
             events.Add(new Event(0, -2));                               //自行病人到达事件
-            currentEvent = (Event)events[0];                            //当前事件设为第一个事件
+
+            this.beds = new HospitalBed[(int)hosInfo[hospital, 2]];
+            for (int i = 0; i != (int)hosInfo[hospital, 2]; i++)
+            {
+                beds[i] = new HospitalBed();
+            }
         }
         double run()
         {
             init();
             while (events.Count != 0)
             {
+                currentEvent = (Event)events[0];
+                events.RemoveAt(0);
                 if (currentEvent.EventType == -1)                       //事件类型为-1，处理救护车病人到达事件
                 {
                     carPatientArrive(hospital);
@@ -197,22 +217,22 @@ namespace 工工综合实验模拟
                 {
                     patientDeparture(hospital);                         //事件类型非-1或2，处理病人离开事件
                 }
-                currentEvent = (Event)events[0];
-                events.RemoveAt(0);
             }
             end();
             return ((double)total_stay_time / total_patients);          //计算得到顾客平均逗留时间并返回
         }
         void end()
         {
-
+            events.Clear();
+            CarPatientQueue.Clear();
+            SelfPatientQueue.Clear();
         }
         void carPatientArrive(int hospital)                             //救护车病人到达函数
         {
             total_patients++;                                           //病人数目++
 
             //-------------------------------生成下一名病人的到达事件---------------------------------------//
-            double intertime = RandExp(hosInfo[hospital, 0]);           //下一名救护车病人到达的时间间隔
+            double intertime = RandExp((double)adjustLambda[hospital]); //下一名救护车病人到达的时间间隔
             double time = currentEvent.occur_time + intertime;          //下一名救护车病人的到达时间
             Event temp_event = new Event(time,-1);                      //生成下一名病人的到达事件
 
@@ -229,9 +249,10 @@ namespace 工工综合实验模拟
 
             //--------------------------------处理目前队列中的病人-----------------------------------------//
             int idleIndex = GetIdleBed();                               //寻找空闲的床位
-            if (idleIndex > 0)
+            if (idleIndex >= 0)
             {                                                           //救护车病人有优先排队权，因此无需判定救护车队伍是否为空
                 Patient outPatient = (Patient)CarPatientQueue[0];
+                time = currentEvent.occur_time + RandExp(hosInfo[hospital, 1]);
                 CarPatientQueue.RemoveAt(0);                            //将病人从队列中取出
                 beds[idleIndex].servePatient(outPatient);               //将病人安排至床位
                 beds[idleIndex].setBusy();                              //将床位状态设置为“繁忙”
@@ -263,11 +284,12 @@ namespace 工工综合实验模拟
 
             //--------------------------------处理目前队列中的病人-----------------------------------------//
             int idleIndex = GetIdleBed();                               //寻找空闲的床位
-            if (idleIndex > 0)
+            if (idleIndex >= 0)
             {
                 if (returnQueueStatus() != QueueStatus.CarBusy)         //只有当没有救护车病人的时候自行病人才可以进入
                 {
                     Patient outPatient = (Patient)SelfPatientQueue[0];
+                    time = currentEvent.occur_time + RandExp(hosInfo[hospital, 1]);
                     SelfPatientQueue.RemoveAt(0);                       //将病人从队列中取出
                     beds[idleIndex].servePatient(outPatient);           //将病人安排至床位
                     beds[idleIndex].setBusy();                          //将床位状态设置为“繁忙”
@@ -283,11 +305,11 @@ namespace 工工综合实验模拟
             if (currentEvent.occur_time< total_service_time)
             {               
                 //计算病人总逗留时间
-                total_stay_time = currentEvent.occur_time - beds[currentEvent.EventType].getArriveTime();
+                total_stay_time += currentEvent.occur_time - beds[currentEvent.EventType].getArriveTime();
                 
                 //如果队列中还有病人，则立刻对下一位病人进行服务，并生成下一位病人的离开事件
                 //优先处理救护车病人
-                if (CarPatientQueue.Count >= 0)
+                if (CarPatientQueue.Count > 0)
                 {
                     Patient patient = (Patient)CarPatientQueue[0];
                     CarPatientQueue.RemoveAt(0);
@@ -299,7 +321,7 @@ namespace 工工综合实验模拟
                     addEvent(events, temp_event);
                 }
 
-                else if (SelfPatientQueue.Count >= 0)
+                else if (SelfPatientQueue.Count > 0)
                 {
                     Patient patient = (Patient)SelfPatientQueue[0];
                     SelfPatientQueue.RemoveAt(0);
@@ -345,10 +367,20 @@ namespace 工工综合实验模拟
         {
             this.total_service_time = total_service_time;
             this.hospital = hospital;
-            total_stay_time = 0;
+            this.bed_number = (int)hosInfo[hospital, 2];
+            this.total_stay_time = 0;
             total_service_time = 0;
 
-            beds = new HospitalBed[(int)hosInfo[hospital, 2]];           
+
+            for (int i = 0; i != 5; i++)                                //根据比例，计算各个医院的救护车病人的到达参数
+            {
+                double lambda_i = 0;
+                for (int j = 0; j != 4; j++)
+                {
+                    lambda_i += sentRatio[j, i] * patientIn[j];
+                }
+                this.adjustLambda.Add(lambda_i);
+            }
         }
         public void stimulate(int stimulate_num)
         {
