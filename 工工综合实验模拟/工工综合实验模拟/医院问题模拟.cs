@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace 工工综合实验模拟
 {
@@ -21,12 +22,12 @@ namespace 工工综合实验模拟
         }
 
         private void Button1_Click(object sender, EventArgs e)
-        {
+        {   //点击“单次模拟”进行一次模拟，观察模拟分布
 
         }
 
         private void Button2_Click(object sender, EventArgs e)
-        {
+        {   //点击返回键返回上个页面
             this.returnForm.Visible = true;
             this.Close();
         }
@@ -35,15 +36,15 @@ namespace 工工综合实验模拟
         {
 
         }
-        class Patient
+    }
+
+    class Patient
     {
         public double arriveTime;
-        public double onRoadTime;
         public int hospital;
-        public Patient(double ArriveTime,double OnRoadTime)
+        public Patient(double ArriveTime)
         {
             arriveTime = ArriveTime;
-            onRoadTime = OnRoadTime;
             hospital = 0;
         }
     }
@@ -52,10 +53,10 @@ namespace 工工综合实验模拟
         SERVICE,    //病床服务中
         IDLE        //病床空闲
     }
-    enum EventType
+    enum QueueStatus
     {
-        Arrive,
-        Leave
+        CarEmpty,
+        CarBusy,
     }
     class HospitalBed
     {
@@ -73,7 +74,7 @@ namespace 工工综合实验模拟
         {
             status = BedStatus.IDLE;
         }
-        public void getPatient(Patient patient)
+        public void servePatient(Patient patient)
         {
             this.patient = patient;
         }
@@ -85,26 +86,15 @@ namespace 工工综合实验模拟
         {
             return (patient.arriveTime);
         }
-        public double getOnRoadTime()
-        {
-            return (patient.onRoadTime);
-        }
     }
     struct Event
     {
         public double occur_time;       //事件发生的时间
-        public int EventType;           //描述事件的类型
-        public Event(double time)
+        public int EventType;           //描述事件的类型,-1代表到达事件，否否则代表床位的编号
+        public Event(double time,int type)
         {
             occur_time = time;
-            EventType = 0;
-        }
-    }
-    class Queue
-    {
-        Queue()
-        {
-
+            EventType = type;
         }
     }
     class QueueSystem
@@ -130,15 +120,18 @@ namespace 工工综合实验模拟
         };
 
         private double  total_service_time; //总的服务时间
-        private int     total_costomer;     //总的服务顾客总数
+        private int     total_patients;     //总的病人数目
         private double  total_stay_time;    //总的等待时间
-        private int     windows_number;     //窗口数目
+        private int     hospital;           //所属医院编号
+        private int     bed_number;         //窗口数目
         private double  avg_stay_time;      //平均时间
-        private double  avg_costomers;      //平均顾客数目
+        private double  avg_costomers;      //平均病人数目
 
+        public HospitalBed [] beds;
+        public ArrayList CarPatientQueue = new ArrayList();
+        public ArrayList SelfPatientQueue = new ArrayList();
 
-        public Patient[] patientQueue = new Patient[0];
-        public Event[] events = new Event[0];
+        public ArrayList events = new ArrayList();
         public Event currentEvent;
         public double[] lastArrive = new double[] { 0, 0, 0, 0 };
         public double[,] sentRatio = new double[,]
@@ -149,7 +142,7 @@ namespace 工工综合实验模拟
             { 0.2, 0.5, 0.6, 0.8, 1} 
         };
 
-        public double RandExp(double const_a) //此处的const_a是指数分布的那个参数λ
+        public double RandExp(double const_a)                           //此处的const_a是指数分布的那个参数λ
         {   //生成指数分布的随机数
             Random rand = new Random(Guid.NewGuid().GetHashCode());
 
@@ -170,60 +163,205 @@ namespace 工工综合实验模拟
             randres = -temp * Math.Log(temp * p, Math.E);
             return randres;
         }
-        public int DesSelect(int station)
-        {   //根据所属站点，生成目的地医院
-            Random rand = new Random(Guid.NewGuid().GetHashCode());
-            double p = rand.NextDouble();
-            for (int i=0; i<4; i++)
+        void addEvent(ArrayList list,Event @event)
+        {
+            for (int i = 0; i != list.Count; i++)
             {
-                if (sentRatio[station,i] > p)
+                if (((Event)list[i]).occur_time > @event.occur_time)
                 {
-                    return (i);
+                    list.Insert(i, @event);
+                    break;
                 }
             }
-            return (0);
         }
-        void init()
+        void init()                                                     //初始化函数，会生成两种类型各一个到达事件
         {
-            Event @event;
-            @event.occur_time = 0;
-            @event.EventType = 0;
-            events.Append(@event);
-            currentEvent = @event;
+            events.Add(new Event(0,-1));                                //救护车病人到达事件
+            events.Add(new Event(0, -2));                               //自行病人到达事件
+            currentEvent = (Event)events[0];                            //当前事件设为第一个事件
         }
-        void run()
+        double run()
         {
             init();
-            while (events.GetLength(0) != 0)
+            while (events.Count != 0)
             {
-                if (currentEvent.EventType == 0)
+                if (currentEvent.EventType == -1)                       //事件类型为-1，处理救护车病人到达事件
                 {
+                    carPatientArrive(hospital);
+                }
+                else if (currentEvent.EventType == -2)                  //事件类型为-2，处理自行病人到达事件
+                {
+                    selfPatientArrive(hospital);            
+                }
+                else
+                {
+                    patientDeparture(hospital);                         //事件类型非-1或2，处理病人离开事件
+                }
+                currentEvent = (Event)events[0];
+                events.RemoveAt(0);
+            }
+            end();
+            return ((double)total_stay_time / total_patients);          //计算得到顾客平均逗留时间并返回
+        }
+        void end()
+        {
 
+        }
+        void carPatientArrive(int hospital)                             //救护车病人到达函数
+        {
+            total_patients++;                                           //病人数目++
+
+            //-------------------------------生成下一名病人的到达事件---------------------------------------//
+            double intertime = RandExp(hosInfo[hospital, 0]);           //下一名救护车病人到达的时间间隔
+            double time = currentEvent.occur_time + intertime;          //下一名救护车病人的到达时间
+            Event temp_event = new Event(time,-1);                      //生成下一名病人的到达事件
+
+            //判断实验终止条件，如果已经到达最大服务时间，则不将事件加入事件列表。
+            if (time < total_service_time)
+            {
+                addEvent(events, temp_event);
+            }
+
+            //------------------------------根据到达事件生成当前病人----------------------------------------//
+            Patient inPatient = new Patient(currentEvent.occur_time);
+            //将病人加入病人列表
+            CarPatientQueue.Add(inPatient);
+
+            //--------------------------------处理目前队列中的病人-----------------------------------------//
+            int idleIndex = GetIdleBed();                               //寻找空闲的床位
+            if (idleIndex > 0)
+            {                                                           //救护车病人有优先排队权，因此无需判定救护车队伍是否为空
+                Patient outPatient = (Patient)CarPatientQueue[0];
+                CarPatientQueue.RemoveAt(0);                            //将病人从队列中取出
+                beds[idleIndex].servePatient(outPatient);               //将病人安排至床位
+                beds[idleIndex].setBusy();                              //将床位状态设置为“繁忙”
+
+                temp_event = new Event(time,idleIndex);                 //病人被安排至床位后，产生对应的离开事件
+                addEvent(events, temp_event);
+            }
+
+        }
+        void selfPatientArrive(int hospital)                            //自行病人到达函数
+        {
+            total_patients++;                                           //病人数目++
+
+            //-------------------------------生成下一名病人的到达事件---------------------------------------//
+            double intertime = RandExp(hosInfo[hospital, 0]);           //下一名自行病人到达的时间间隔
+            double time = currentEvent.occur_time + intertime;          //下一名自行病人的到达时间
+            Event temp_event = new Event(time,-2);                      //生成下一名病人的到达事件
+
+            //判断实验终止条件，如果已经到达最大服务时间，则不将事件加入事件列表。
+            if (time < total_service_time)
+            {
+                addEvent(events, temp_event);
+            }
+
+            //------------------------------根据到达事件生成当前病人----------------------------------------//
+            Patient inPatient = new Patient(currentEvent.occur_time);
+            //将病人加入病人列表
+            SelfPatientQueue.Add(inPatient);
+
+            //--------------------------------处理目前队列中的病人-----------------------------------------//
+            int idleIndex = GetIdleBed();                               //寻找空闲的床位
+            if (idleIndex > 0)
+            {
+                if (returnQueueStatus() != QueueStatus.CarBusy)         //只有当没有救护车病人的时候自行病人才可以进入
+                {
+                    Patient outPatient = (Patient)SelfPatientQueue[0];
+                    SelfPatientQueue.RemoveAt(0);                       //将病人从队列中取出
+                    beds[idleIndex].servePatient(outPatient);           //将病人安排至床位
+                    beds[idleIndex].setBusy();                          //将床位状态设置为“繁忙”
+
+                    temp_event = new Event(time,idleIndex);             //病人被安排至床位后，生成对应的离开事件
+                    addEvent(events, temp_event);
                 }
             }
         }
-        void carPatientArrive(int station)                      //救护车病人到达函数
+        void patientDeparture(int hospital)                             //病人离开函数
         {
-            total_costomer++;                                   //总病人数目+1               
-            double intertime = RandExp(patientIn[station]);     //根据所属救护站，计算病人生成间隔时间
-            lastArrive[station] += intertime;                   //救护站最后到达时间更新
-            double time = lastArrive[station];                  
-            Event temp_event = new Event(time);
-            if (time < total_service_time)
-            {
-                events.Append(temp_event);
+            //判断实验终止条件，如果已经到达最大服务时间，则进行处理
+            if (currentEvent.occur_time< total_service_time)
+            {               
+                //计算病人总逗留时间
+                total_stay_time = currentEvent.occur_time - beds[currentEvent.EventType].getArriveTime();
+                
+                //如果队列中还有病人，则立刻对下一位病人进行服务，并生成下一位病人的离开事件
+                //优先处理救护车病人
+                if (CarPatientQueue.Count >= 0)
+                {
+                    Patient patient = (Patient)CarPatientQueue[0];
+                    CarPatientQueue.RemoveAt(0);
+                    beds[currentEvent.EventType].servePatient(patient); //从队列中取出下一位病人并分配至当前床位
+
+                    double InterTime = RandExp(hosInfo[hospital,1]);    //计算当前病人的治疗时间
+                    double time = currentEvent.occur_time + InterTime;  //计算下一位病人离开事件的发生时间
+                    Event temp_event = new Event(time, currentEvent.EventType);
+                    addEvent(events, temp_event);
+                }
+
+                else if (SelfPatientQueue.Count >= 0)
+                {
+                    Patient patient = (Patient)SelfPatientQueue[0];
+                    SelfPatientQueue.RemoveAt(0);
+                    beds[currentEvent.EventType].servePatient(patient); //从队列中取出下一位病人并分配至当前床位
+
+                    double InterTime = RandExp(hosInfo[hospital, 1]);   //计算当前病人的治疗时间
+                    double time = currentEvent.occur_time + InterTime;  //计算下一位病人离开事件的发生时间
+                    Event temp_event = new Event(time, currentEvent.EventType);
+                    addEvent(events, temp_event);
+                }
+
+                else
+                {
+                    beds[currentEvent.EventType].setIdle();
+                }
             }
-            patientQueue.Append(new Patient(time,RandExp(2)));  
         }
-        void selfPatientArrive(int hospital)                    //自行病人到达函数
+        QueueStatus returnQueueStatus()
         {
-
+            //查看当前救护车队列是否为空
+            if (CarPatientQueue.Count >= 0)
+            {
+                return (QueueStatus.CarBusy);
+            }
+            else
+            {
+                return (QueueStatus.CarEmpty);
+            }
         }
-        void patientDeparture()
+        int GetIdleBed()
         {
+            for (int i = 10; i != bed_number; ++i)
+            {
+                if (beds[i].isIdle())
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
 
+        public QueueSystem(double total_service_time, int hospital)     //构造函数
+        {
+            this.total_service_time = total_service_time;
+            this.hospital = hospital;
+            total_stay_time = 0;
+            total_service_time = 0;
+
+            beds = new HospitalBed[(int)hosInfo[hospital, 2]];           
+        }
+        public void stimulate(int stimulate_num)
+        {
+            double sum = 0;                                             //sum为多次模拟中病人平均逗留时间之和
+            for (int i = 0; i != stimulate_num; i++)
+            {
+                sum += run();
+            }
+
+            //计算多次模拟的平均病人逗留时间和病人数目；
+            avg_stay_time = sum / stimulate_num;
+            avg_costomers = total_patients / (total_service_time * stimulate_num);
         }
     }
 
-    }
 }
