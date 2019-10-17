@@ -44,6 +44,16 @@
             this.label3 = new System.Windows.Forms.Label();
             this.Hos1_AvgTime = new System.Windows.Forms.Label();
             this.Label1 = new System.Windows.Forms.Label();
+            this.CarLine5 = new System.Windows.Forms.Label();
+            this.CarLine4 = new System.Windows.Forms.Label();
+            this.CarLine3 = new System.Windows.Forms.Label();
+            this.CarLine2 = new System.Windows.Forms.Label();
+            this.CarLine1 = new System.Windows.Forms.Label();
+            this.Selfline5 = new System.Windows.Forms.Label();
+            this.Selfline4 = new System.Windows.Forms.Label();
+            this.Selfline3 = new System.Windows.Forms.Label();
+            this.Selfline2 = new System.Windows.Forms.Label();
+            this.Selfline1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +69,16 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.Selfline5);
+            this.panel1.Controls.Add(this.Selfline4);
+            this.panel1.Controls.Add(this.Selfline3);
+            this.panel1.Controls.Add(this.Selfline2);
+            this.panel1.Controls.Add(this.Selfline1);
+            this.panel1.Controls.Add(this.CarLine5);
+            this.panel1.Controls.Add(this.CarLine4);
+            this.panel1.Controls.Add(this.CarLine3);
+            this.panel1.Controls.Add(this.CarLine2);
+            this.panel1.Controls.Add(this.CarLine1);
             this.panel1.Controls.Add(this.Hos5_AvgTime);
             this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.Hos4_AvgTime);
@@ -213,6 +233,96 @@
             this.Label1.TabIndex = 0;
             this.Label1.Text = "医院1：";
             // 
+            // CarLine5
+            // 
+            this.CarLine5.AutoSize = true;
+            this.CarLine5.Location = new System.Drawing.Point(197, 120);
+            this.CarLine5.Name = "CarLine5";
+            this.CarLine5.Size = new System.Drawing.Size(47, 12);
+            this.CarLine5.TabIndex = 18;
+            this.CarLine5.Text = "label13";
+            // 
+            // CarLine4
+            // 
+            this.CarLine4.AutoSize = true;
+            this.CarLine4.Location = new System.Drawing.Point(197, 101);
+            this.CarLine4.Name = "CarLine4";
+            this.CarLine4.Size = new System.Drawing.Size(47, 12);
+            this.CarLine4.TabIndex = 17;
+            this.CarLine4.Text = "label11";
+            // 
+            // CarLine3
+            // 
+            this.CarLine3.AutoSize = true;
+            this.CarLine3.Location = new System.Drawing.Point(197, 82);
+            this.CarLine3.Name = "CarLine3";
+            this.CarLine3.Size = new System.Drawing.Size(41, 12);
+            this.CarLine3.TabIndex = 16;
+            this.CarLine3.Text = "label9";
+            // 
+            // CarLine2
+            // 
+            this.CarLine2.AutoSize = true;
+            this.CarLine2.Location = new System.Drawing.Point(197, 63);
+            this.CarLine2.Name = "CarLine2";
+            this.CarLine2.Size = new System.Drawing.Size(41, 12);
+            this.CarLine2.TabIndex = 15;
+            this.CarLine2.Text = "label7";
+            // 
+            // CarLine1
+            // 
+            this.CarLine1.AutoSize = true;
+            this.CarLine1.Location = new System.Drawing.Point(197, 44);
+            this.CarLine1.Name = "CarLine1";
+            this.CarLine1.Size = new System.Drawing.Size(41, 12);
+            this.CarLine1.TabIndex = 14;
+            this.CarLine1.Text = "label2";
+            // 
+            // Selfline5
+            // 
+            this.Selfline5.AutoSize = true;
+            this.Selfline5.Location = new System.Drawing.Point(281, 120);
+            this.Selfline5.Name = "Selfline5";
+            this.Selfline5.Size = new System.Drawing.Size(47, 12);
+            this.Selfline5.TabIndex = 23;
+            this.Selfline5.Text = "label13";
+            // 
+            // Selfline4
+            // 
+            this.Selfline4.AutoSize = true;
+            this.Selfline4.Location = new System.Drawing.Point(281, 101);
+            this.Selfline4.Name = "Selfline4";
+            this.Selfline4.Size = new System.Drawing.Size(47, 12);
+            this.Selfline4.TabIndex = 22;
+            this.Selfline4.Text = "label11";
+            // 
+            // Selfline3
+            // 
+            this.Selfline3.AutoSize = true;
+            this.Selfline3.Location = new System.Drawing.Point(281, 82);
+            this.Selfline3.Name = "Selfline3";
+            this.Selfline3.Size = new System.Drawing.Size(41, 12);
+            this.Selfline3.TabIndex = 21;
+            this.Selfline3.Text = "label9";
+            // 
+            // Selfline2
+            // 
+            this.Selfline2.AutoSize = true;
+            this.Selfline2.Location = new System.Drawing.Point(281, 63);
+            this.Selfline2.Name = "Selfline2";
+            this.Selfline2.Size = new System.Drawing.Size(41, 12);
+            this.Selfline2.TabIndex = 20;
+            this.Selfline2.Text = "label7";
+            // 
+            // Selfline1
+            // 
+            this.Selfline1.AutoSize = true;
+            this.Selfline1.Location = new System.Drawing.Point(281, 44);
+            this.Selfline1.Name = "Selfline1";
+            this.Selfline1.Size = new System.Drawing.Size(41, 12);
+            this.Selfline1.TabIndex = 19;
+            this.Selfline1.Text = "label2";
+            // 
             // Hospital_Once
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -246,5 +356,15 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label Hos2_AvgTime;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label Selfline5;
+        private System.Windows.Forms.Label Selfline4;
+        private System.Windows.Forms.Label Selfline3;
+        private System.Windows.Forms.Label Selfline2;
+        private System.Windows.Forms.Label Selfline1;
+        private System.Windows.Forms.Label CarLine5;
+        private System.Windows.Forms.Label CarLine4;
+        private System.Windows.Forms.Label CarLine3;
+        private System.Windows.Forms.Label CarLine2;
+        private System.Windows.Forms.Label CarLine1;
     }
 }

@@ -70,15 +70,19 @@ namespace 工工综合实验模拟
                 system.stimulate(simulate_num, 0);
 
                 double[] avg_Stay_Time = new double[5];
+                double[] avg_line_car = new double[5];
+                double[] avg_line_self = new double[5];
                 for (int i = 0; i != 5; i++)
                 {
                     system.stimulate(simulate_num, i);
                     avg_Stay_Time[i] = system.avg_stay_time;
+                    avg_line_car[i] = system.avg_line_car;
+                    avg_line_self[i] = system.avg_line_self;
                 }
                 //如果仅运行一次，则弹出运行一次界面
                 if (simulate_num == 1)
                 {
-                    Hospital_Once Output1 = new Hospital_Once(this, avg_Stay_Time)
+                    Hospital_Once Output1 = new Hospital_Once(this, avg_Stay_Time,avg_line_self,avg_line_car)
                     {
                         StartPosition = FormStartPosition.CenterScreen
                     };
@@ -210,7 +214,7 @@ namespace 工工综合实验模拟
         double[,] hosInfo;                  //医院的基本参数
 
 
-
+        double patient_time_sum;            //为多次模拟中病人平均逗留时间之和
         private double  total_service_time; //总的服务时间
         private int     total_patients;     //总的病人数目
         private double  total_stay_time;    //总的等待时间
@@ -218,6 +222,13 @@ namespace 工工综合实验模拟
         private int     bed_number;         //医院床位数目
         public double  avg_stay_time;       //平均时间
         public double  avg_costomers;       //平均病人数目
+
+        public double avg_line_car;         //平均救护车队长
+        public double avg_line_self;        //平均自行到达队长
+
+        public double car_line_time;        //计算平均救护车队长用
+        public double self_line_time;       //计算平均自行到达队长用
+
 
         public HospitalBed [] beds;
         public ArrayList CarPatientQueue = new ArrayList();
@@ -275,13 +286,19 @@ namespace 工工综合实验模拟
             total_stay_time = 0;
             total_patients = 0;
 
+            patient_time_sum = 0;
+            avg_line_car = 0;
+            avg_line_self = 0;
+            car_line_time = 0;
+            self_line_time = 0;
+
             this.beds = new HospitalBed[(int)hosInfo[hospital, 2]];
             for (int i = 0; i != (int)hosInfo[hospital, 2]; i++)
             {
                 beds[i] = new HospitalBed();
             }
         }
-        double run()
+        void run()
         {
             init();
             while (events.Count != 0)
@@ -302,7 +319,9 @@ namespace 工工综合实验模拟
                 }
             }
             end();
-            return (total_stay_time / total_patients);          //计算得到顾客平均逗留时间并返回
+            avg_line_car = avg_line_car / car_line_time;
+            avg_line_self = avg_line_self / self_line_time;
+            patient_time_sum = total_stay_time / total_patients;
         }
         void end()
         {
@@ -327,8 +346,10 @@ namespace 工工综合实验模拟
 
             //------------------------------根据到达事件生成当前病人----------------------------------------//
             Patient inPatient = new Patient(currentEvent.occur_time);
-            //将病人加入病人列表
+
+            //将病人加入排队
             CarPatientQueue.Add(inPatient);
+            
 
             //--------------------------------处理目前队列中的病人-----------------------------------------//
             int idleIndex = GetIdleBed();                               //寻找空闲的床位
@@ -342,6 +363,11 @@ namespace 工工综合实验模拟
 
                 temp_event = new Event(time,idleIndex);                 //病人被安排至床位后，产生对应的离开事件
                 addEvent(events, temp_event);
+            }
+            else
+            {
+                avg_line_car += (CarPatientQueue.Count-1) * (currentEvent.occur_time - car_line_time);
+                car_line_time = currentEvent.occur_time;
             }
 
         }
@@ -362,6 +388,7 @@ namespace 工工综合实验模拟
 
             //------------------------------根据到达事件生成当前病人----------------------------------------//
             Patient inPatient = new Patient(currentEvent.occur_time);
+
             //将病人加入病人列表
             SelfPatientQueue.Add(inPatient);
 
@@ -376,10 +403,14 @@ namespace 工工综合实验模拟
                     SelfPatientQueue.RemoveAt(0);                       //将病人从队列中取出
                     beds[idleIndex].servePatient(outPatient);           //将病人安排至床位
                     beds[idleIndex].setBusy();                          //将床位状态设置为“繁忙”
-
                     temp_event = new Event(time,idleIndex);             //病人被安排至床位后，生成对应的离开事件
                     addEvent(events, temp_event);
                 }
+            }
+            else
+            {
+                avg_line_self += (SelfPatientQueue.Count-1) * (currentEvent.occur_time - self_line_time);
+                self_line_time = currentEvent.occur_time;
             }
         }
         void patientDeparture(int hospital)                             //病人离开函数
@@ -394,6 +425,8 @@ namespace 工工综合实验模拟
                 //优先处理救护车病人
                 if (CarPatientQueue.Count > 0)
                 {
+                    avg_line_car += CarPatientQueue.Count * (currentEvent.occur_time - car_line_time);
+                    car_line_time = currentEvent.occur_time;
                     Patient patient = (Patient)CarPatientQueue[0];
                     CarPatientQueue.RemoveAt(0);
                     beds[currentEvent.EventType].servePatient(patient); //从队列中取出下一位病人并分配至当前床位
@@ -406,6 +439,8 @@ namespace 工工综合实验模拟
 
                 else if (SelfPatientQueue.Count > 0)
                 {
+                    avg_line_self += SelfPatientQueue.Count * (currentEvent.occur_time - self_line_time);
+                    self_line_time = currentEvent.occur_time;
                     Patient patient = (Patient)SelfPatientQueue[0];
                     SelfPatientQueue.RemoveAt(0);
                     beds[currentEvent.EventType].servePatient(patient); //从队列中取出下一位病人并分配至当前床位
@@ -470,14 +505,22 @@ namespace 工工综合实验模拟
         public void stimulate(int stimulate_num,int hospital)
         {
             this.hospital = hospital;
-            double sum = 0;                                             //sum为多次模拟中病人平均逗留时间之和
+            double total_car_line = 0;
+            double total_self_line = 0;
+            double total_stay_time = 0;
+
             for (int i = 0; i != stimulate_num; i++)
             {
-                sum += run();
+                run();
+                total_car_line += avg_line_car;
+                total_self_line += avg_line_self;
+                total_stay_time += patient_time_sum;
             }
 
             //计算多次模拟的平均病人逗留时间和病人数目；
-            avg_stay_time = sum / stimulate_num;
+            avg_stay_time = total_stay_time / stimulate_num;
+            avg_line_car = total_car_line;
+            avg_line_self = total_self_line;
             avg_costomers = total_patients / (total_service_time * stimulate_num);          
         }
     }
