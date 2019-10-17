@@ -36,7 +36,7 @@ namespace 工工综合实验模拟
             double[] patientIn = new double[] { 2.8, 2.2, 3.4, 2.5 };
             double[,] patient2Hos = new double[,]
             {   //从救护站转移到医院的参数
-                            {2.2, 2,   2.4, 1,   1.5} ,
+                            {2.2, 2,   2.4, 1,   1.5},
                             {2.8, 2.5, 1.8, 2.3, 3.1},
                             {2,   2.2, 2.8, 3,   2.3},
                             {2.5, 2.6, 2,   2.5, 2.1}
@@ -50,9 +50,14 @@ namespace 工工综合实验模拟
                 for (int j = 0; j !=4; j++)
                 {
                     totalRatio_i += sent_Ratio[j, i]*patientIn[j];
+                    if (sent_Ratio[j, i]*patientIn[j] > patient2Hos[j, i])
+                    {
+                        MessageBox.Show("比例不满足路程约束条件");
+                        isValid = false;
+                    }
                 }
                 totalRatio_i += hosInfo[i, 0];
-                if (totalRatio_i > hosInfo[i,1]* hosInfo[i,2])
+                if (totalRatio_i > hosInfo[i,1]* hosInfo[i,3])
                 {
                     MessageBox.Show("比例会造成无限队列，请重新输入");
                     isValid = false;
@@ -61,7 +66,7 @@ namespace 工工综合实验模拟
 
             if(isValid)
             {
-                QueueSystem system = new QueueSystem(total_service_time, sent_Ratio,hosInfo,patientIn);
+                QueueSystem system = new QueueSystem(total_service_time, sent_Ratio, hosInfo ,patientIn);
                 system.stimulate(simulate_num, 0);
 
                 double[] avg_Stay_Time = new double[5];
@@ -124,7 +129,6 @@ namespace 工工综合实验模拟
             //比例复位
             for (int i = 1; i != 5; i++)
             {
-                double total_j = 0;
                 for (int j = 1; j != 6; j++)
                 {
                     string Name = "Ratio" + i + "_" + j;
@@ -193,7 +197,7 @@ namespace 工工综合实验模拟
     struct Event
     {
         public double occur_time;       //事件发生的时间
-        public int EventType;           //描述事件的类型,-1代表到达事件，否否则代表床位的编号
+        public int EventType;           //描述事件的类型,-1、-2代表到达事件，否则代表床位的编号
         public Event(double time,int type)
         {
             occur_time = time;
@@ -268,6 +272,8 @@ namespace 工工综合实验模拟
             events.Clear();
             events.Add(new Event(0,-1));                                //救护车病人到达事件
             events.Add(new Event(0, -2));                               //自行病人到达事件
+            total_stay_time = 0;
+            total_patients = 0;
 
             this.beds = new HospitalBed[(int)hosInfo[hospital, 2]];
             for (int i = 0; i != (int)hosInfo[hospital, 2]; i++)
@@ -296,7 +302,7 @@ namespace 工工综合实验模拟
                 }
             }
             end();
-            return ((double)total_stay_time / total_patients);          //计算得到顾客平均逗留时间并返回
+            return (total_stay_time / total_patients);          //计算得到顾客平均逗留时间并返回
         }
         void end()
         {
@@ -382,7 +388,7 @@ namespace 工工综合实验模拟
             if (currentEvent.occur_time< total_service_time)
             {               
                 //计算病人总逗留时间
-                total_stay_time += currentEvent.occur_time - beds[currentEvent.EventType].getArriveTime();
+                total_stay_time += (currentEvent.occur_time - beds[currentEvent.EventType].getArriveTime());
                 
                 //如果队列中还有病人，则立刻对下一位病人进行服务，并生成下一位病人的离开事件
                 //优先处理救护车病人
@@ -472,10 +478,7 @@ namespace 工工综合实验模拟
 
             //计算多次模拟的平均病人逗留时间和病人数目；
             avg_stay_time = sum / stimulate_num;
-            avg_costomers = total_patients / (total_service_time * stimulate_num);
-
-            total_stay_time = 0;
-            total_patients = 0;
+            avg_costomers = total_patients / (total_service_time * stimulate_num);          
         }
     }
 
