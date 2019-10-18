@@ -260,8 +260,9 @@ namespace 工工综合实验模拟
         public double[] lastArrive = new double[] { 0, 0, 0, 0 };
         public ArrayList adjustLambda = new ArrayList();
 
-        public double RandExp(double const_a)                           //此处的const_a是指数分布的那个参数λ
+        public double RandExp(double lambda)                           //此处的const_a是指数分布的那个参数λ
         {   //生成指数分布的随机数
+            /*
             Random rand = new Random(Guid.NewGuid().GetHashCode());
 
             double temp;
@@ -280,6 +281,19 @@ namespace 工工综合实验模拟
             }
             randres = -temp * Math.Log(temp * p, Math.E);
             return randres;
+            */
+            Random rand = new Random(Guid.NewGuid().GetHashCode());
+            double pV = 0.0;
+            while (true)
+            {
+                pV = rand.NextDouble();
+                if (pV != 1)
+                {
+                    break;
+                }
+            }
+            pV = (-1.0 / lambda) * Math.Log(1 - pV,Math.E);
+            return pV;
         }
         void addEvent(ArrayList list,Event @event)
         {
@@ -470,7 +484,7 @@ namespace 工工综合实验模拟
         }
         void patientDeparture(int hospital)                             //病人离开函数
         {
-            //判断实验终止条件，如果已经到达最大服务时间，则进行处理
+            //判断实验终止条件，如果已经到达最大服务时间，则不进行处理
             if (currentEvent.occur_time< total_service_time)
             {
                 //计算病人总逗留时间
