@@ -34,6 +34,7 @@ namespace 工工综合实验模拟
             int simulate_num = int.Parse(stiNumBox.Text);           // 模拟次数
 
             double[] patientIn = new double[] { 2.8, 2.2, 3.4, 2.5 };
+            //double[] patientIn = new double[] { 0, 0, 0, 1 };
             double[,] patient2Hos = new double[,]
             {   //从救护站转移到医院的参数
                             {2.2, 2,   2.4, 1,   1.5},
@@ -318,8 +319,8 @@ namespace 工工综合实验模拟
             self_line_time = 0;
             total_line_time = 0;
 
-            this.beds = new HospitalBed[(int)hosInfo[hospital, 2]];
-            for (int i = 0; i != (int)hosInfo[hospital, 2]; i++)
+            this.beds = new HospitalBed[(int)hosInfo[hospital, 3]];
+            for (int i = 0; i != (int)hosInfo[hospital, 3]; i++)
             {
                 beds[i] = new HospitalBed();
             }
@@ -330,7 +331,6 @@ namespace 工工综合实验模拟
             while (events.Count != 0)
             {
                 currentEvent = (Event)events[0];
-                events.RemoveAt(0);
                 if (currentEvent.EventType == -1)                       //事件类型为-1，处理救护车病人到达事件
                 {
                     carPatientArrive(hospital);
@@ -343,6 +343,7 @@ namespace 工工综合实验模拟
                 {
                     patientDeparture(hospital);                         //事件类型非-1或2，处理病人离开事件
                 }
+                events.RemoveAt(0);
             }
             end();
             avg_line_car = avg_line_car / car_line_time;
@@ -547,7 +548,7 @@ namespace 工工综合实验模拟
         QueueStatus returnQueueStatus()
         {
             //查看当前救护车队列是否为空
-            if (CarPatientQueue.Count >= 0)
+            if (CarPatientQueue.Count > 0)
             {
                 return (QueueStatus.CarBusy);
             }
@@ -558,7 +559,7 @@ namespace 工工综合实验模拟
         }
         int GetIdleBed()
         {
-            for (int i = 10; i != bed_number; ++i)
+            for (int i =0; i != bed_number; ++i)
             {
                 if (beds[i].isIdle())
                 {
@@ -574,7 +575,6 @@ namespace 工工综合实验模拟
             this.hosInfo = HosInfo;
             this.sentRatio = SentRatio;
             this.total_service_time = total_service_time;
-            this.bed_number = (int)hosInfo[hospital, 3];
             this.total_stay_time = 0;
             total_service_time = 0;
 
@@ -592,6 +592,7 @@ namespace 工工综合实验模拟
         public void stimulate(int stimulate_num,int hospital)
         {
             this.hospital = hospital;
+            bed_number = (int)hosInfo[hospital, 3];
             double total_car_line = 0;
             double total_self_line = 0;
             double total_line = 0;

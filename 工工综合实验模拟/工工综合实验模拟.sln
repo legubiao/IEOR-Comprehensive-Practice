@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "工工综合实验模拟", "工工综合实验模拟\工工综合实验模拟.csproj", "{F17DC8CF-40AB-4BB9-A034-FB24C8B03BEB}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "AppPackage", "AppPackage\AppPackage.wapproj", "{8DEA5301-0947-4FC4-83F9-15654D3D6A5A}"
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Stimulation", "AppPackage\Stimulation.wapproj", "{8DEA5301-0947-4FC4-83F9-15654D3D6A5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
