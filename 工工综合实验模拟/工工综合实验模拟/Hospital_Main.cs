@@ -568,7 +568,7 @@ namespace 工工综合实验模拟
             }
             return -1;
         }
-
+          
         public QueueSystem(double total_service_time, double[,] SentRatio,double[,] HosInfo,double[] patientIn)                   //构造函数
         {
 

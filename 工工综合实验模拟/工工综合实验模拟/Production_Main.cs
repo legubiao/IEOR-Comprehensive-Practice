@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace 工工综合实验模拟
 {
-    public partial class 流水线问题模拟 : Form
+    public partial class Production_Main : Form
     {
-        public 流水线问题模拟()
+        public Production_Main()
         {
             InitializeComponent();
         }

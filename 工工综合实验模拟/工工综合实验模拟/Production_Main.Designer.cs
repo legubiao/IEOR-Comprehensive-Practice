@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class 流水线问题模拟
+    partial class Production_Main
     {
         /// <summary>
         /// Required designer variable.
