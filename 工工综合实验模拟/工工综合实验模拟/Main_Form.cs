@@ -27,6 +27,16 @@ namespace 工工综合实验模拟
             this.Hide();
             hospital.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Production_Main production = new Production_Main(this)
+            {
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            this.Hide();
+            production.Show();
+        }
     }
 
 }

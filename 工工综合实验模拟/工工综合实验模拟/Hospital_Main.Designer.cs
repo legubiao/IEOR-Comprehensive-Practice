@@ -109,7 +109,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(519, 355);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(115, 40);
             this.button2.TabIndex = 1;
@@ -128,7 +128,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(16, 196);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(619, 151);
@@ -140,9 +140,9 @@
             this.tabPage1.Controls.Add(this.stiTimeBox);
             this.tabPage1.Controls.Add(this.label17);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(611, 122);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "基础参数";
@@ -184,9 +184,9 @@
             this.tabPage2.Controls.Add(this.label16);
             this.tabPage2.Controls.Add(this.stiNumBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(611, 122);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "模拟参数";
@@ -236,7 +236,7 @@
             this.tabPage3.Controls.Add(this.Bed2);
             this.tabPage3.Controls.Add(this.Bed1);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(611, 122);
             this.tabPage3.TabIndex = 2;
@@ -396,7 +396,7 @@
             this.panel1.Controls.Add(this.Ratio1_2);
             this.panel1.Controls.Add(this.Ratio1_1);
             this.panel1.Location = new System.Drawing.Point(16, 15);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(619, 174);
             this.panel1.TabIndex = 34;
@@ -679,10 +679,10 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("幼圆", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.Location = new System.Drawing.Point(16, 366);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button3.Location = new System.Drawing.Point(16, 355);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(55, 29);
+            this.button3.Size = new System.Drawing.Size(68, 40);
             this.button3.TabIndex = 61;
             this.button3.Text = "复位";
             this.button3.UseVisualStyleBackColor = true;

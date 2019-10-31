@@ -34,10 +34,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(22, 133);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(29, 166);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 38);
+            this.button1.Size = new System.Drawing.Size(147, 48);
             this.button1.TabIndex = 0;
             this.button1.Text = "医院问题模拟";
             this.button1.UseVisualStyleBackColor = true;
@@ -45,23 +45,24 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(194, 133);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Location = new System.Drawing.Point(259, 166);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(104, 38);
+            this.button2.Size = new System.Drawing.Size(139, 48);
             this.button2.TabIndex = 1;
             this.button2.Text = "流水线问题模拟";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // 模拟主界面
+            // Main_Form
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(335, 195);
+            this.ClientSize = new System.Drawing.Size(447, 244);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "模拟主界面";
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Name = "Main_Form";
             this.Text = "模拟实验选择";
             this.ResumeLayout(false);
 
