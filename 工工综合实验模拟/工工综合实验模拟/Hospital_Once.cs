@@ -20,19 +20,21 @@ namespace 工工综合实验模拟
             InitializeComponent();
             this.returnForm = hospital_Main;
 
+            double target_value = 0;
             for (int i =0; i != 5; i++)
             {
                 this.Controls.Find("Hos" + (i + 1) + "_AvgTime", true)[0].Text = avg_StayTime[i].ToString("f3");
                 this.Controls.Find("Avg_Selfline" + (i + 1), true)[0].Text = avg_line_self[i].ToString("f3");
                 this.Controls.Find("Avg_Carline" + (i + 1), true)[0].Text = avg_line_car[i].ToString("f3");
                 this.Controls.Find("Avg_Total" + (i + 1), true)[0].Text = avg_line_total[i].ToString("f3");
+                target_value += (3 * avg_line_car[i] + avg_line_self[i]);
 
                 this.Controls.Find("Hos" + (i + 1)+"_MaxTime", true)[0].Text = max_StayTime[i].ToString("f3");
                 this.Controls.Find("Max_Selfline" + (i + 1), true)[0].Text = max_line_self[i].ToString("f3");
                 this.Controls.Find("Max_Carline" + (i + 1), true)[0].Text = max_line_car[i].ToString("f3");
                 this.Controls.Find("Max_Total" + (i + 1), true)[0].Text = max_line_total[i].ToString("f3");
-
             }
+            this.TargetValue.Text = target_value.ToString("f3");
         }
 
         private void Button1_Click(object sender, EventArgs e)

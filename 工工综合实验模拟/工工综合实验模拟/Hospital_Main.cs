@@ -18,7 +18,7 @@ namespace 工工综合实验模拟
         {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
                    {3.4, 0.42, 40, 13, 13},
                    {3.6, 0.5,  40, 15, 15},
-                   {3.7, 0.55, 40, 20, 20},
+                   {3.7, 0.46, 40, 20, 20},
                    {4,   0.55, 40, 20, 20},
                    {3.6, 0.4,  40, 18, 18}
         };
@@ -93,7 +93,7 @@ namespace 工工综合实验模拟
                     max_line_total[i] = system.max_line_total;
                 }
                 //如果仅运行一次，则弹出运行一次界面
-                if (simulate_num == 1)
+                if (simulate_num != 0)
                 {
                     Hospital_Once Output1 = new Hospital_Once(this, avg_Stay_Time,max_Stay_Time,
                         avg_line_self,avg_line_car,avg_line_total,
@@ -261,27 +261,7 @@ namespace 工工综合实验模拟
         public ArrayList adjustLambda = new ArrayList();
 
         public double RandExp(double lambda)                           //此处的const_a是指数分布的那个参数λ
-        {   //生成指数分布的随机数
-            /*
-            Random rand = new Random(Guid.NewGuid().GetHashCode());
-
-            double temp;
-            if (const_a != 0)
-                temp = 1 / const_a;
-            else
-                throw new System.InvalidOperationException("除数不能为零！不能产生参数为零的指数分布！");
-
-            double randres;
-            double p;
-            while (true) //用于产生随机的密度，保证比参数λ小             
-            {
-                p = rand.NextDouble();
-                if (p < const_a)
-                    break;
-            }
-            randres = -temp * Math.Log(temp * p, Math.E);
-            return randres;
-            */
+        {   
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             double pV = 0.0;
             while (true)
@@ -329,9 +309,9 @@ namespace 工工综合实验模拟
             max_line_car = 0;
             max_line_self = 0;
             max_line_total = 0;
-            car_line_time = 0;
-            self_line_time = 0;
-            total_line_time = 0;
+            car_line_time = float.MinValue;
+            self_line_time = float.MinValue;
+            total_line_time = float.MinValue;
 
             this.beds = new HospitalBed[(int)hosInfo[hospital, 3]];
             for (int i = 0; i != (int)hosInfo[hospital, 3]; i++)
