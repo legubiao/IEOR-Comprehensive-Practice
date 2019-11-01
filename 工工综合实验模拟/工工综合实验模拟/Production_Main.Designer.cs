@@ -34,7 +34,15 @@
             this.button3 = new System.Windows.Forms.Button();
             this.StartButton = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -43,22 +51,22 @@
             this.panel1.Controls.Add(this.InputTextBox);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(625, 82);
+            this.panel1.Size = new System.Drawing.Size(625, 67);
             this.panel1.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(3, 15);
+            this.label1.Location = new System.Drawing.Point(3, 4);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(512, 27);
             this.label1.TabIndex = 4;
-            this.label1.Text = "请在下方输入框输入工件加工的顺序，并使用逗号隔开：";
+            this.label1.Text = "请在下方输入框输入工件加工的顺序（使用逗号隔开）：";
             // 
             // InputTextBox
             // 
-            this.InputTextBox.Location = new System.Drawing.Point(8, 45);
+            this.InputTextBox.Location = new System.Drawing.Point(3, 34);
             this.InputTextBox.Name = "InputTextBox";
             this.InputTextBox.Size = new System.Drawing.Size(605, 25);
             this.InputTextBox.TabIndex = 3;
@@ -99,11 +107,75 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "随机加工时间",
+            "固定加工时间"});
+            this.comboBox1.Location = new System.Drawing.Point(216, 7);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(192, 23);
+            this.comboBox1.TabIndex = 65;
+            this.comboBox1.Text = "固定加工问题";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Location = new System.Drawing.Point(12, 85);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(625, 38);
+            this.panel2.TabIndex = 5;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Location = new System.Drawing.Point(3, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(212, 27);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "请选择工件加工方式：";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.comboBox2);
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Location = new System.Drawing.Point(12, 129);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(625, 38);
+            this.panel3.TabIndex = 65;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(3, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(152, 27);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "请选择子问题：";
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "7个工件",
+            "15个工件"});
+            this.comboBox2.Location = new System.Drawing.Point(216, 7);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(192, 23);
+            this.comboBox2.TabIndex = 65;
+            this.comboBox2.Text = "7个工件";
+            // 
             // Production_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(649, 409);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.button4);
@@ -113,6 +185,10 @@
             this.Text = "流水线问题模拟";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -124,5 +200,11 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button StartButton;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

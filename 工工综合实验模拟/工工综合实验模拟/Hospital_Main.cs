@@ -213,11 +213,11 @@ namespace 工工综合实验模拟
             return (patient.arriveTime);
         }
     }
-    struct Event
+    struct H_Event
     {
         public double occur_time;       //事件发生的时间
         public int EventType;           //描述事件的类型,-1、-2代表到达事件，否则代表床位的编号
-        public Event(double time,int type)
+        public H_Event(double time,int type)
         {
             occur_time = time;
             EventType = type;
@@ -256,7 +256,7 @@ namespace 工工综合实验模拟
         public ArrayList SelfPatientQueue = new ArrayList();
 
         public ArrayList events = new ArrayList();
-        public Event currentEvent;
+        public H_Event currentEvent;
         public double[] lastArrive = new double[] { 0, 0, 0, 0 };
         public ArrayList adjustLambda = new ArrayList();
 
@@ -275,9 +275,9 @@ namespace 工工综合实验模拟
             pV = (-1.0 / lambda) * Math.Log(1 - pV,Math.E);
             return pV;
         }
-        void addEvent(ArrayList list,Event @event)
+        void addEvent(ArrayList list,H_Event @event)
         {
-            if (@event.occur_time > ((Event)list[list.Count-1]).occur_time)
+            if (@event.occur_time > ((H_Event)list[list.Count-1]).occur_time)
             {
                 list.Add(@event);
             }
@@ -285,7 +285,7 @@ namespace 工工综合实验模拟
             {
                 for (int i = 0; i != list.Count; i++)
                 {
-                    if (((Event)list[i]).occur_time > @event.occur_time)
+                    if (((H_Event)list[i]).occur_time > @event.occur_time)
                     {
                         list.Insert(i, @event);
                         break;
@@ -296,8 +296,8 @@ namespace 工工综合实验模拟
         void init()                                                     //初始化函数，会生成两种类型各一个到达事件
         {
             events.Clear();
-            events.Add(new Event(0,-1));                                //救护车病人到达事件
-            events.Add(new Event(0, -2));                               //自行病人到达事件
+            events.Add(new H_Event(0,-1));                                //救护车病人到达事件
+            events.Add(new H_Event(0, -2));                               //自行病人到达事件
             total_stay_time = 0;
             max_stay_time = 0;
             total_patients = 0;
@@ -324,7 +324,7 @@ namespace 工工综合实验模拟
             init();
             while (events.Count != 0)
             {
-                currentEvent = (Event)events[0];
+                currentEvent = (H_Event)events[0];
                 if (currentEvent.EventType == -1)                       //事件类型为-1，处理救护车病人到达事件
                 {
                     carPatientArrive(hospital);
@@ -358,7 +358,7 @@ namespace 工工综合实验模拟
             //-------------------------------生成下一名病人的到达事件---------------------------------------//
             double intertime = RandExp((double)adjustLambda[hospital]); //下一名救护车病人到达的时间间隔
             double time = currentEvent.occur_time + intertime;          //下一名救护车病人的到达时间
-            Event temp_event = new Event(time,-1);                      //生成下一名病人的到达事件
+            H_Event temp_event = new H_Event(time,-1);                      //生成下一名病人的到达事件
 
             //判断实验终止条件，如果已经到达最大服务时间，则不将事件加入事件列表。
             if (time < total_service_time)
@@ -383,7 +383,7 @@ namespace 工工综合实验模拟
                 beds[idleIndex].servePatient(outPatient);               //将病人安排至床位
                 beds[idleIndex].setBusy();                              //将床位状态设置为“繁忙”
 
-                temp_event = new Event(time,idleIndex);                 //病人被安排至床位后，产生对应的离开事件
+                temp_event = new H_Event(time,idleIndex);                 //病人被安排至床位后，产生对应的离开事件
                 addEvent(events, temp_event);
             }
             else
@@ -414,7 +414,7 @@ namespace 工工综合实验模拟
             //-------------------------------生成下一名病人的到达事件---------------------------------------//
             double intertime = RandExp(hosInfo[hospital, 0]);           //下一名自行病人到达的时间间隔
             double time = currentEvent.occur_time + intertime;          //下一名自行病人的到达时间
-            Event temp_event = new Event(time,-2);                      //生成下一名病人的到达事件
+            H_Event temp_event = new H_Event(time,-2);                      //生成下一名病人的到达事件
 
             //判断实验终止条件，如果已经到达最大服务时间，则不将事件加入事件列表。
             if (time < total_service_time)
@@ -439,7 +439,7 @@ namespace 工工综合实验模拟
                     SelfPatientQueue.RemoveAt(0);                       //将病人从队列中取出
                     beds[idleIndex].servePatient(outPatient);           //将病人安排至床位
                     beds[idleIndex].setBusy();                          //将床位状态设置为“繁忙”
-                    temp_event = new Event(time,idleIndex);             //病人被安排至床位后，生成对应的离开事件
+                    temp_event = new H_Event(time,idleIndex);             //病人被安排至床位后，生成对应的离开事件
                     addEvent(events, temp_event);
                 }
             }
@@ -501,7 +501,7 @@ namespace 工工综合实验模拟
 
                     double InterTime = RandExp(hosInfo[hospital,1]);    //计算当前病人的治疗时间
                     double time = currentEvent.occur_time + InterTime;  //计算下一位病人离开事件的发生时间
-                    Event temp_event = new Event(time, currentEvent.EventType);
+                    H_Event temp_event = new H_Event(time, currentEvent.EventType);
                     addEvent(events, temp_event);
                 }
 
@@ -529,7 +529,7 @@ namespace 工工综合实验模拟
 
                     double InterTime = RandExp(hosInfo[hospital, 1]);   //计算当前病人的治疗时间
                     double time = currentEvent.occur_time + InterTime;  //计算下一位病人离开事件的发生时间
-                    Event temp_event = new Event(time, currentEvent.EventType);
+                    H_Event temp_event = new H_Event(time, currentEvent.EventType);
                     addEvent(events, temp_event);
                 }
 
