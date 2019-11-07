@@ -128,7 +128,7 @@ namespace 工工综合实验模拟
                 for (int j = 1; j != 6; j++)
                 {
                     sentRatio[i - 1, j-1] = sentRatio[i - 1, j-1] / total_j;
-                    this.Controls.Find("Ratio" + i + "_" + j, true)[0].Text = sentRatio[i - 1, j-1].ToString("f3");
+                    this.Controls.Find("Ratio" + i + "_" + j, true)[0].Text = sentRatio[i - 1, j-1].ToString("f4");
                 }
             }
             for (int i = 0; i != 5; i++)
@@ -145,13 +145,20 @@ namespace 工工综合实验模拟
 
         private void Button3_Click(object sender, EventArgs e)
         {
+             double[,] best_ratio = new double[,]
+              {   
+                   {0.0025, 0.2081, 0.2617, 0.3565, 0.1712},
+                   {0.0005, 0.3006, 0.3819, 0.3167, 0.0003},
+                   {0.0001, 0.0103, 0.1921, 0.5282, 0.2692},
+                   {0.1325, 0.1768, 0.3362, 0.2836, 0.0709}
+               };
             //比例复位
             for (int i = 1; i != 5; i++)
             {
                 for (int j = 1; j != 6; j++)
                 {
                     string Name = "Ratio" + i + "_" + j;
-                    this.Controls.Find(Name, true)[0].Text = "0.200";
+                    this.Controls.Find(Name, true)[0].Text = best_ratio[i-1,j-1].ToString();
                 }               
             }
             //床位复位
