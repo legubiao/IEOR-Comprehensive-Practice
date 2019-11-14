@@ -193,12 +193,14 @@ namespace 工工综合实验模拟
     class Machine
     {
         private MachineStatus status;
-        public int      Machine_No;                                //机器编号
+        public int      Machine_No;                                 //机器编号
+        public int      Machine_Type;                               //机器类型            
         public double   finished_Time;
-        public Machine(int M_No)
+        public Machine(int M_No,int M_type)
         { //构造函数，初始时设置机器为空闲
             status = MachineStatus.IDLE;
             Machine_No = M_No;
+            Machine_Type = M_type;
         }
         public void setBusy()//窗口设置为繁忙
         {
@@ -380,11 +382,11 @@ namespace 工工综合实验模拟
                 if (productionType == ProductionType.Random)
                 {
 
-                    ProcessTime = Part_Num1[currentPart.part_No]*RandExp((float)1/ProductionTime1[machine.Machine_No, currentPart.part_No]);
+                    ProcessTime = Part_Num1[currentPart.part_No]*RandExp((float)1/ProductionTime1[machine.Machine_Type, currentPart.part_No]);
                 }
                 else
                 {
-                    ProcessTime = Part_Num1[currentPart.part_No] * ProductionTime1[machine.Machine_No, currentPart.part_No];
+                    ProcessTime = Part_Num1[currentPart.part_No] * ProductionTime1[machine.Machine_Type, currentPart.part_No];
                 }
                 ChangeTime = Part_Change1[lastPart.part_No, currentPart.part_No];
             }
@@ -392,11 +394,11 @@ namespace 工工综合实验模拟
             {
                 if (productionType == ProductionType.Random)
                 {
-                    ProcessTime = Part_Num2[currentPart.part_No] * RandExp((float)1 / ProductionTime2[machine.Machine_No, currentPart.part_No]);
+                    ProcessTime = Part_Num2[currentPart.part_No] * RandExp((float)1 / ProductionTime2[machine.Machine_Type, currentPart.part_No]);
                 }
                 else
                 {
-                    ProcessTime = Part_Num2[currentPart.part_No] * ProductionTime2[machine.Machine_No, currentPart.part_No];
+                    ProcessTime = Part_Num2[currentPart.part_No] * ProductionTime2[machine.Machine_Type, currentPart.part_No];
                 }
                 ChangeTime = Part_Change2[lastPart.part_No, currentPart.part_No];
             }
@@ -407,7 +409,7 @@ namespace 工工综合实验模拟
             addEvent(events, down_Event);
             machine.finished_Time = time;
 
-            if (machine.Machine_No == 0)
+            if (machine.Machine_Type == 0)
             {
                 //如果是第一台机器，就顺便安排下一个部件的上机   
                 if (currentPart.part_No != 6)
@@ -429,7 +431,7 @@ namespace 工工综合实验模拟
             if (current_machine.Machine_No < Total_Machine_No-1)
             {
                 Machine next_machine;
-                if (current_machine.Machine_No == 4)
+                if (current_machine.Machine_No == 4)                            //对应位置6的双机器
                 {
                     if (machines[5].finished_Time > machines[10].finished_Time)
                     {
@@ -469,9 +471,9 @@ namespace 工工综合实验模拟
             this.machines = new Machine[Total_Machine_No+1];              //初始化机器队列
             for (int i = 0; i != Total_Machine_No; i++)
             {
-                machines[i] = new Machine(i);
+                machines[i] = new Machine(i,i);
             }
-            machines[10]=(new Machine(5));
+            machines[10]=(new Machine(10,5));
 
             this.parts = new Part[Total_Parts_No];                      //初始化部件队列
             for (int i = 0; i != Total_Parts_No; i++)
