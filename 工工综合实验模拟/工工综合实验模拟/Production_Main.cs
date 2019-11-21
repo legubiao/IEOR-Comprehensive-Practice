@@ -149,7 +149,18 @@ namespace 工工综合实验模拟
                 {
                     ProductionSystem system = new ProductionSystem(Q_type, P_type, Sequence);
                     system.stimulate(1);
-                    MessageBox.Show(string.Join(",", system.leaveTimes));
+
+                    DataTable dt = new DataTable();
+                    for (int i = 0; i < system.leaveTimes.GetLength(1); i++)
+                        dt.Columns.Add(i.ToString(), typeof(int));
+                    for (int i = 0; i < system.leaveTimes.GetLength(0); i++)
+                    {
+                        DataRow dr = dt.NewRow();
+                        for (int j = 0; j < system.leaveTimes.GetLength(1); j++)
+                            dr[j] = system.leaveTimes[i, j];
+                        dt.Rows.Add(dr);
+                    }
+                    this.dataGridView1.DataSource = dt;
                 }
             }
             else
@@ -163,9 +174,10 @@ namespace 工工综合实验模拟
     {
         public PartStatus part_status;
         public int part_No;
-        public Part(int part_No)
+        public int part_Type;
+        public Part(int part_Type)
         {
-            this.part_No = part_No;
+            this.part_Type = part_Type;
             part_status = PartStatus.onHold;
         }
     }
@@ -220,7 +232,7 @@ namespace 工工综合实验模拟
         public double occur_time;       //事件发生的时间
         public int EventType;           //描述事件的类型
         public int machine;             //事件相关的机器
-        public int part_i;                //事件相关的部件的序号
+        public int part_i;              //事件相关的部件的序号
 
         public P_Event(double time, int type, int Machine, int Part)
         {
@@ -327,7 +339,7 @@ namespace 工工综合实验模拟
         Part[] parts;
 
         public double[] arriveTimes;
-        public double[] leaveTimes;
+        public double[,] leaveTimes;
 
         void addEvent(ArrayList list, P_Event @event)
         {
@@ -382,11 +394,11 @@ namespace 工工综合实验模拟
                 if (productionType == ProductionType.Random)
                 {
 
-                    ProcessTime = Part_Num1[currentPart.part_No]*RandExp((float)1/ProductionTime1[machine.Machine_Type, currentPart.part_No]);
+                    ProcessTime = Part_Num1[currentPart.part_Type]*RandExp((float)1/ProductionTime1[machine.Machine_Type, currentPart.part_Type]);
                 }
                 else
                 {
-                    ProcessTime = Part_Num1[currentPart.part_No] * ProductionTime1[machine.Machine_Type, currentPart.part_No];
+                    ProcessTime = Part_Num1[currentPart.part_Type] * ProductionTime1[machine.Machine_Type, currentPart.part_Type];
                 }
                 ChangeTime = Part_Change1[lastPart.part_No, currentPart.part_No];
             }
@@ -394,13 +406,13 @@ namespace 工工综合实验模拟
             {
                 if (productionType == ProductionType.Random)
                 {
-                    ProcessTime = Part_Num2[currentPart.part_No] * RandExp((float)1 / ProductionTime2[machine.Machine_Type, currentPart.part_No]);
+                    ProcessTime = Part_Num2[currentPart.part_Type] * RandExp((float)1 / ProductionTime2[machine.Machine_Type, currentPart.part_Type]);
                 }
                 else
                 {
-                    ProcessTime = Part_Num2[currentPart.part_No] * ProductionTime2[machine.Machine_Type, currentPart.part_No];
+                    ProcessTime = Part_Num2[currentPart.part_Type] * ProductionTime2[machine.Machine_Type, currentPart.part_Type];
                 }
-                ChangeTime = Part_Change2[lastPart.part_No, currentPart.part_No];
+                ChangeTime = Part_Change2[lastPart.part_Type, currentPart.part_Type];
             }
 
             double time = currentEvent.occur_time + ChangeTime + ProcessTime;
@@ -412,7 +424,7 @@ namespace 工工综合实验模拟
             if (machine.Machine_Type == 0)
             {
                 //如果是第一台机器，就顺便安排下一个部件的上机   
-                if (currentPart.part_No != 6)
+                if (currentPart.part_No != parts.Length-1)
                 {
                     P_Event up_Event = new P_Event(time, 1, machine.Machine_No, currentPart.part_No + 1);
                     addEvent(events, up_Event);
@@ -428,7 +440,7 @@ namespace 工工综合实验模拟
         
             double time = 0;
 
-            if (current_machine.Machine_No < Total_Machine_No-1)
+            if (current_machine.Machine_Type < Total_Machine_No-1)
             {
                 Machine next_machine;
                 if (current_machine.Machine_No == 4)                            //对应位置6的双机器
@@ -444,7 +456,7 @@ namespace 工工综合实验模拟
                 }
                 else
                 {
-                    next_machine = machines[current_machine.Machine_No + 1];
+                    next_machine = machines[current_machine.Machine_Type + 1];
                 }
                 if (currentEvent.occur_time < next_machine.finished_Time)
                 {
@@ -454,14 +466,15 @@ namespace 工工综合实验模拟
                 {
                     time = currentEvent.occur_time;
                 }
+                leaveTimes[current_machine.Machine_Type,part_i] = currentEvent.occur_time;
                 //若当前机器不是最后一个，则生成该工件在下一个机器的到达事件
-                P_Event up_Event = new P_Event(time, 1, next_machine.Machine_No, parts[part_i].part_No);
+                P_Event up_Event = new P_Event(time, 1, next_machine.Machine_Type, parts[part_i].part_No);
                 addEvent(events, up_Event);
             }
             else
             {
                 parts[part_i].part_status = PartStatus.Finished;        //表示工件已经加工完成
-                leaveTimes[part_i] = currentEvent.occur_time;
+                leaveTimes[part_i, Total_Machine_No-1] = currentEvent.occur_time;
             }
         }
         void init()                                                     //初始化函数，会生成两种类型各一个到达事件
@@ -479,6 +492,7 @@ namespace 工工综合实验模拟
             for (int i = 0; i != Total_Parts_No; i++)
             {
                 parts[i] = new Part(Parts_Sequence[i]);
+                parts[i].part_No = i;
             }
             events.Add(new P_Event(0,1,parts[0].part_No,machines[0].Machine_No));
             arriveTimes=new double[] {0};
@@ -517,7 +531,7 @@ namespace 工工综合实验模拟
             this.problemType = problemType;
             this.productionType = productionType;
             this.Total_Parts_No = parts.Length;
-            this.leaveTimes = new double[Total_Parts_No];
+            this.leaveTimes = new double[Total_Parts_No,Total_Machine_No];
             this.Parts_Sequence = parts;
         }
     }
