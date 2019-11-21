@@ -145,6 +145,11 @@ namespace 工工综合实验模拟
                         }
                     }
                 }
+                if (Sequence.Length != Sequence.Max()+1)
+                {
+                    MessageBox.Show("工件数目不匹配");
+                    isvalid = false;
+                }
                 if (isvalid)
                 {
                     ProductionSystem system = new ProductionSystem(Q_type, P_type, Sequence);
@@ -167,6 +172,11 @@ namespace 工工综合实验模拟
             {
                 MessageBox.Show("输入不能为空哦");
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            InputTextBox.Text = "";
         }
     }
 
@@ -400,7 +410,7 @@ namespace 工工综合实验模拟
                 {
                     ProcessTime = Part_Num1[currentPart.part_Type] * ProductionTime1[machine.Machine_Type, currentPart.part_Type];
                 }
-                ChangeTime = Part_Change1[lastPart.part_No, currentPart.part_No];
+                ChangeTime = Part_Change1[lastPart.part_Type, currentPart.part_Type];
             }
             else
             {
@@ -466,7 +476,8 @@ namespace 工工综合实验模拟
                 {
                     time = currentEvent.occur_time;
                 }
-                leaveTimes[current_machine.Machine_Type,part_i] = currentEvent.occur_time;
+                leaveTimes[parts[part_i].part_Type, current_machine.Machine_Type] = currentEvent.occur_time;
+                
                 //若当前机器不是最后一个，则生成该工件在下一个机器的到达事件
                 P_Event up_Event = new P_Event(time, 1, next_machine.Machine_Type, parts[part_i].part_No);
                 addEvent(events, up_Event);
@@ -474,7 +485,7 @@ namespace 工工综合实验模拟
             else
             {
                 parts[part_i].part_status = PartStatus.Finished;        //表示工件已经加工完成
-                leaveTimes[part_i, Total_Machine_No-1] = currentEvent.occur_time;
+                leaveTimes[parts[part_i].part_Type, Total_Machine_No-1] = currentEvent.occur_time;
             }
         }
         void init()                                                     //初始化函数，会生成两种类型各一个到达事件
