@@ -112,7 +112,7 @@ namespace 工工综合实验模拟
                 }
                 ProblemType Q_type;
                 ProductionType P_type;
-                if (comboBox1.Text == "固定加工问题")
+                if (comboBox1.Text == "固定加工时间")
                 {
                     P_type = ProductionType.Fixed;
                 }
