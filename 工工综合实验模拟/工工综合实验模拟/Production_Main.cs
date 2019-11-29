@@ -114,7 +114,13 @@ namespace 工工综合实验模拟
                 for (int i = 0; i < InputString.Length; i++)
                 {
                     Sequence[i] = int.Parse(InputString[i]) - 1;
-                    Preference[i] = int.Parse(InputPrefer[i]) - 1;
+                    Preference[i] = int.Parse(InputPrefer[i]);
+                }
+                
+                if (Sequence.Length != Preference.Length)
+                {
+                    isvalid = false;
+                    MessageBox.Show("部件数目与部件偏好数目不匹配");
                 }
 
                 ProblemType Q_type;
@@ -162,18 +168,12 @@ namespace 工工综合实验模拟
                 {
                     ProductionSystem system = new ProductionSystem(Q_type, P_type, Sequence,Preference);
                     system.stimulate(1);
-
-                    DataTable dt = new DataTable();
-                    for (int i = 0; i < system.leaveTimes.GetLength(1); i++)
-                        dt.Columns.Add(i.ToString(), typeof(int));
-                    for (int i = 0; i < system.leaveTimes.GetLength(0); i++)
+                    Production_Result Output = new Production_Result(this,system.leaveTimes,system.Machine6Record)
                     {
-                        DataRow dr = dt.NewRow();
-                        for (int j = 0; j < system.leaveTimes.GetLength(1); j++)
-                            dr[j] = system.leaveTimes[i, j];
-                        dt.Rows.Add(dr);
-                    }
-                    this.dataGridView1.DataSource = dt;
+                        StartPosition = FormStartPosition.CenterScreen
+                    };
+                    this.Hide();
+                    Output.Show();
                 }
             }
             else
@@ -236,11 +236,11 @@ namespace 工工综合实验模拟
             Machine_Type = M_type;
             Machine_Scale = 1;
         }
-        public void setBusy()//窗口设置为繁忙
+        public void setBusy()//机器设置为繁忙
         {
             status = MachineStatus.SERVICE;
         }
-        public void setIdle()//窗口设置为空闲
+        public void setIdle()//机器设置为空闲
         {
             status = MachineStatus.IDLE;
         }
@@ -355,6 +355,7 @@ namespace 工工综合实验模拟
         int Total_Parts_No;
         int[] Parts_Sequence;                                           //部件初始进入的次序
         int[] Parts_Preference;
+        public int[] Machine6Record;
 
         ProductionType productionType;                                  //加工时间的计算是指数分布还是固定数值
         ProblemType problemType;                                        //问题是7个的小问题还是14个的大问题
@@ -467,17 +468,20 @@ namespace 工工综合实验模拟
             if (current_machine.Machine_Type < Total_Machine_No-1)
             {
                 Machine next_machine;
+
                 if (current_machine.Machine_No == 4)                            //对应位置6的双机器
                 {
-                    if (machines[5].status == MachineStatus.IDLE && machines[10].status == MachineStatus.IDLE)
+                    if (machines[5].isIdle() == true && machines[10].isIdle() == true)
                     {
                         if (parts[part_i].part_Prefer == 1)
                         {
                             next_machine = machines[5];
+                            Machine6Record[parts[part_i].part_Type] = 1;
                         }
                         else
                         {
                             next_machine = machines[10];
+                            Machine6Record[parts[part_i].part_Type] = 2;
                         }
                     }
                     else
@@ -485,10 +489,12 @@ namespace 工工综合实验模拟
                         if (machines[5].finished_Time > machines[10].finished_Time)
                         {
                             next_machine = machines[10];
+                            Machine6Record[parts[part_i].part_Type] = 2;
                         }
                         else
                         {
                             next_machine = machines[5];
+                            Machine6Record[parts[part_i].part_Type] = 1;
                         }
                     }
                 }
@@ -496,6 +502,7 @@ namespace 工工综合实验模拟
                 {
                     next_machine = machines[current_machine.Machine_Type + 1];
                 }
+
                 if (currentEvent.occur_time < next_machine.finished_Time)
                 {
                     time = next_machine.finished_Time;
@@ -504,6 +511,7 @@ namespace 工工综合实验模拟
                 {
                     time = currentEvent.occur_time;
                 }
+
                 leaveTimes[parts[part_i].part_Type, current_machine.Machine_Type] = currentEvent.occur_time;
                 
                 //若当前机器不是最后一个，则生成该工件在下一个机器的到达事件
@@ -519,7 +527,6 @@ namespace 工工综合实验模拟
         void init()                                                     //初始化函数，会生成两种类型各一个到达事件
         {
             events.Clear();
-
             this.machines = new Machine[Total_Machine_No+1];              //初始化机器队列
             for (int i = 0; i != Total_Machine_No; i++)
             {
@@ -573,7 +580,9 @@ namespace 工工综合实验模拟
             this.Total_Parts_No = parts.Length;
             this.leaveTimes = new double[Total_Parts_No,Total_Machine_No];
             this.Parts_Sequence = parts;
+
             this.Parts_Preference = parts_prefer;
+            this.Machine6Record = new int[Total_Parts_No];
         }
     }
 }

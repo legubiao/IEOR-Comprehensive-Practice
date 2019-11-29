@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class Hospital_Once
+    partial class Hospital_Result
     {
         /// <summary>
         /// Required designer variable.

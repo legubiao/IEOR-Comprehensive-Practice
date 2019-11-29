@@ -95,7 +95,7 @@ namespace 工工综合实验模拟
                 //如果仅运行一次，则弹出运行一次界面
                 if (simulate_num != 0)
                 {
-                    Hospital_Once Output1 = new Hospital_Once(this, avg_Stay_Time,max_Stay_Time,
+                    Hospital_Result Output1 = new Hospital_Result(this, avg_Stay_Time,max_Stay_Time,
                         avg_line_self,avg_line_car,avg_line_total,
                         max_line_self, max_line_car, max_line_total)
                     {
