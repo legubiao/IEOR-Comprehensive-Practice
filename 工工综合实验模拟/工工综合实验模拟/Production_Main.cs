@@ -125,15 +125,16 @@ namespace 工工综合实验模拟
 
                 ProblemType Q_type;
                 ProductionType P_type;
+                SelectionMethod S_type;
 
                 if (comboBox1.Text == "固定加工时间")
-                {
                     P_type = ProductionType.Fixed;
-                }
-                else
-                {
-                    P_type = ProductionType.Random;
-                }
+                else P_type = ProductionType.Random;
+
+                if (comboBox3.Text == "仅在两台机器都空闲时考虑偏好")             
+                    S_type = SelectionMethod.slack;
+                else S_type = SelectionMethod.strict;
+
                 
                 if (comboBox2.Text == "7个工件")
                 {
@@ -166,7 +167,7 @@ namespace 工工综合实验模拟
                 }
                 if (isvalid)
                 {
-                    ProductionSystem system = new ProductionSystem(Q_type, P_type, Sequence,Preference);
+                    ProductionSystem system = new ProductionSystem(Q_type, P_type,S_type, Sequence,Preference);
                     system.stimulate(1);
                     Production_Result Output = new Production_Result(this,system.leaveTimes,system.Machine6Record)
                     {
@@ -211,9 +212,10 @@ namespace 工工综合实验模拟
     {//定义机床的两种状态
         SERVICE,    //服务中
         IDLE,       //空闲
+        Vergin      //还没有加工过任何工件
     }
-    enum ProductionType
-    {//定义问题的两种类型
+    enum ProductionType           
+    {
         Fixed,      //固定加工时间
         Random      //随机加工时间
     }
@@ -222,6 +224,11 @@ namespace 工工综合实验模拟
         small,      //七个工件的小问题
         big         //十多个工件的大问题
     }
+    enum SelectionMethod
+    {
+        strict,     //相对宽松的机器6选择方式
+        slack       //严格的机器6选择方式
+    }
     class Machine
     {
         public MachineStatus status;
@@ -229,9 +236,10 @@ namespace 工工综合实验模拟
         public int      Machine_Type;                               //机器类型            
         public double   finished_Time;
         public double Machine_Scale;                                //机器的工作效率，机器6的两个机器能力不同
+        public int last_part;                                       //机器加工的上一个部件
         public Machine(int M_No,int M_type)
         { //构造函数，初始时设置机器为空闲
-            status = MachineStatus.IDLE;
+            status = MachineStatus.Vergin;
             Machine_No = M_No;
             Machine_Type = M_type;
             Machine_Scale = 1;
@@ -246,7 +254,7 @@ namespace 工工综合实验模拟
         }
         public bool isIdle()
         {
-            return (status == MachineStatus.IDLE);
+            return (status == MachineStatus.IDLE || status == MachineStatus.Vergin);
         }
     }
     struct P_Event
@@ -359,13 +367,14 @@ namespace 工工综合实验模拟
 
         ProductionType productionType;                                  //加工时间的计算是指数分布还是固定数值
         ProblemType problemType;                                        //问题是7个的小问题还是14个的大问题
+        SelectionMethod SelectionMethod;                                //机器6上双机器的选择策略
         Machine[] machines;
         Part[] parts;
 
         public double[] arriveTimes;
         public double[,] leaveTimes;
 
-        void addEvent(ArrayList list, P_Event @event)
+        void addEvent(ArrayList list, P_Event @event)                   //事件添加函数，会按照事件发生事件排序
         {
             if (@event.occur_time >= ((P_Event)list[list.Count - 1]).occur_time)
             {
@@ -383,7 +392,7 @@ namespace 工工综合实验模拟
                 }
             }
         }
-        double RandExp(double lambda)                                   //此处的const_a是指数分布的那个参数λ
+        double RandExp(double lambda)                                   //指数函数计算，此处的const_a是指数分布的那个参数λ
         {
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             double pV = 0.0;
@@ -398,22 +407,26 @@ namespace 工工综合实验模拟
             pV = (-1.0 / lambda) * Math.Log(1 - pV, Math.E);
             return pV;
         }
-        void partArrive(Machine machine,int part_i)
+        void partArrive(Machine machine,int part_i)                     //部件上机事件
         {
             Part currentPart = parts[part_i];
             Part lastPart;
-            if (part_i == 0)
+
+            //换模时间的判定
+            if(machine.status == MachineStatus.Vergin)
             {
                 lastPart = currentPart;
             }
             else
             {
-                lastPart = parts[part_i - 1];
+                lastPart = parts[machine.last_part];
             }
-            double ProcessTime = 0;
-            double ChangeTime = 0;
+            machine.last_part = part_i;
             machine.setBusy();
 
+            double ProcessTime = 0;
+            double ChangeTime = 0;
+            
             if (problemType == ProblemType.small)
             {
                 if (productionType == ProductionType.Random)
@@ -439,8 +452,10 @@ namespace 工工综合实验模拟
                 }
                 ChangeTime = Part_Change2[lastPart.part_Type, currentPart.part_Type];
             }
-
+            //计算部件的换模时间和加工时间的总和
             double time = currentEvent.occur_time + ChangeTime + ProcessTime*machine.Machine_Scale;
+            
+            
             //生成当前部件在当前机器的下机事件
             P_Event down_Event = new P_Event(time, -1, machine.Machine_No, currentPart.part_No);
             addEvent(events, down_Event);
@@ -459,7 +474,7 @@ namespace 工工综合实验模拟
 
 
         }
-        void partLeave(Machine current_machine, int part_i)
+        void partLeave(Machine current_machine, int part_i)             //下机事件
         {
             current_machine.setIdle();
         
@@ -468,10 +483,40 @@ namespace 工工综合实验模拟
             if (current_machine.Machine_Type < Total_Machine_No-1)
             {
                 Machine next_machine;
-
-                if (current_machine.Machine_No == 4)                            //对应位置6的双机器
+                
+                //机器6双机器的判定
+                if (current_machine.Machine_No == 4)                            
                 {
-                    if (machines[5].isIdle() == true && machines[10].isIdle() == true)
+                    if (SelectionMethod == SelectionMethod.slack)
+                    {
+                        if (machines[5].isIdle() == true && machines[10].isIdle() == true)
+                        {
+                            if (parts[part_i].part_Prefer == 1)
+                            {
+                                next_machine = machines[5];
+                                Machine6Record[parts[part_i].part_Type] = 1;
+                            }
+                            else
+                            {
+                                next_machine = machines[10];
+                                Machine6Record[parts[part_i].part_Type] = 2;
+                            }
+                        }
+                        else
+                        {
+                            if (machines[5].finished_Time > machines[10].finished_Time)
+                            {
+                                next_machine = machines[10];
+                                Machine6Record[parts[part_i].part_Type] = 2;
+                            }
+                            else
+                            {
+                                next_machine = machines[5];
+                                Machine6Record[parts[part_i].part_Type] = 1;
+                            }
+                        }
+                    }
+                    else
                     {
                         if (parts[part_i].part_Prefer == 1)
                         {
@@ -482,19 +527,6 @@ namespace 工工综合实验模拟
                         {
                             next_machine = machines[10];
                             Machine6Record[parts[part_i].part_Type] = 2;
-                        }
-                    }
-                    else
-                    {
-                        if (machines[5].finished_Time > machines[10].finished_Time)
-                        {
-                            next_machine = machines[10];
-                            Machine6Record[parts[part_i].part_Type] = 2;
-                        }
-                        else
-                        {
-                            next_machine = machines[5];
-                            Machine6Record[parts[part_i].part_Type] = 1;
                         }
                     }
                 }
@@ -515,7 +547,7 @@ namespace 工工综合实验模拟
                 leaveTimes[parts[part_i].part_Type, current_machine.Machine_Type] = currentEvent.occur_time;
                 
                 //若当前机器不是最后一个，则生成该工件在下一个机器的到达事件
-                P_Event up_Event = new P_Event(time, 1, next_machine.Machine_Type, parts[part_i].part_No);
+                P_Event up_Event = new P_Event(time, 1, next_machine.Machine_No, parts[part_i].part_No);
                 addEvent(events, up_Event);
             }
             else
@@ -524,10 +556,11 @@ namespace 工工综合实验模拟
                 leaveTimes[parts[part_i].part_Type, Total_Machine_No-1] = currentEvent.occur_time;
             }
         }
-        void init()                                                     //初始化函数，会生成两种类型各一个到达事件
+
+        void init()                                                     //初始化函数
         {
             events.Clear();
-            this.machines = new Machine[Total_Machine_No+1];              //初始化机器队列
+            this.machines = new Machine[Total_Machine_No+1];            //初始化机器队列
             for (int i = 0; i != Total_Machine_No; i++)
             {
                 machines[i] = new Machine(i,i);
@@ -573,10 +606,12 @@ namespace 工工综合实验模拟
         {
             events.Clear();
         }
-        public ProductionSystem(ProblemType problemType,ProductionType productionType ,int[] parts,int[] parts_prefer)
+        public ProductionSystem(ProblemType problemType,ProductionType productionType ,SelectionMethod selectionMethod,int[] parts,int[] parts_prefer)
         {
             this.problemType = problemType;
             this.productionType = productionType;
+            this.SelectionMethod = selectionMethod;
+
             this.Total_Parts_No = parts.Length;
             this.leaveTimes = new double[Total_Parts_No,Total_Machine_No];
             this.Parts_Sequence = parts;
