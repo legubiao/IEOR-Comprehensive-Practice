@@ -104,6 +104,19 @@ namespace 工工综合实验模拟
         {
             if (InputTextBox.Text != "")
             {
+
+                ProblemType Q_type;
+                ProductionType P_type;
+                SelectionMethod S_type;
+
+                if (comboBox1.Text == "固定加工时间")
+                    P_type = ProductionType.Fixed;
+                else P_type = ProductionType.Random;
+
+                if (comboBox3.Text == "仅在两台机器都空闲时考虑偏好")
+                    S_type = SelectionMethod.slack;
+                else S_type = SelectionMethod.strict;
+
                 string[] InputString = InputTextBox.Text.Split(',');
                 string[] InputPrefer = partPrefer.Text.Split(',');
                 bool isvalid = true;
@@ -123,20 +136,7 @@ namespace 工工综合实验模拟
                     isvalid = false;
                     MessageBox.Show("部件数目与部件偏好数目不匹配");
                 }
-
-                ProblemType Q_type;
-                ProductionType P_type;
-                SelectionMethod S_type;
-
-                if (comboBox1.Text == "固定加工时间")
-                    P_type = ProductionType.Fixed;
-                else P_type = ProductionType.Random;
-
-                if (comboBox3.Text == "仅在两台机器都空闲时考虑偏好")             
-                    S_type = SelectionMethod.slack;
-                else S_type = SelectionMethod.strict;
-
-                
+              
                 if (comboBox2.Text == "7个工件")
                 {
                     Q_type = ProblemType.small;
@@ -146,6 +146,7 @@ namespace 工工综合实验模拟
                         {
                             MessageBox.Show("工件序号超出最大值");
                             isvalid = false;
+                            break;
                         }
                     }
                 }
@@ -158,7 +159,13 @@ namespace 工工综合实验模拟
                         {
                             MessageBox.Show("工件序号超出最大值");
                             isvalid = false;
+                            break;
                         }
+                    }
+                    if (P_type == ProductionType.Random)
+                    {
+                        MessageBox.Show("工件数目与问题类型不匹配");
+                        isvalid = false;
                     }
                 }
                 if (Sequence.Length != Sequence.Max()+1)
@@ -395,20 +402,34 @@ namespace 工工综合实验模拟
                 }
             }
         }
-        double RandExp(double lambda)                                   //指数函数计算，此处的const_a是指数分布的那个参数λ
+        double P_Random(double miu,int machine_no)                                   //指数函数计算，此处的const_a是指数分布的那个参数λ
         {
             Random rand = new Random(Guid.NewGuid().GetHashCode());
-            double pV = 0.0;
-            while (true)
-            {
-                pV = rand.NextDouble();
-                if (pV != 1)
+            if (machine_no == 2 || machine_no == 4)
+            { // 高斯分布
+                double s = 0, u = 0, v = 0;
+                while (s > 1 || s == 0)
                 {
-                    break;
+                    u = rand.NextDouble() * 2 - 1;
+                    v = rand.NextDouble() * 2 - 1;
+                    s = u * u + v * v;
                 }
+
+                var z = Math.Sqrt(-2 * Math.Log(s) / s) * u;
+                return (z * 120 + miu);
             }
-            pV = (-1.0 / lambda) * Math.Log(1 - pV, Math.E);
-            return pV;
+            else if (machine_no == 3 || machine_no == 5)
+            { // 离散分布
+                double u = rand.NextDouble();
+                if (u <= 0.1)
+                    return 0.7 * miu;
+                else if (u <= 0.7)
+                    return miu;
+                else
+                    return 1.4 * miu;
+            }
+            else
+                return miu;
         }
         void partArrive(Machine machine,int part_i)                     //部件上机事件
         {
@@ -451,7 +472,7 @@ namespace 工工综合实验模拟
                 if (productionType == ProductionType.Random)
                 {
 
-                    ProcessTime = Part_Num1[currentPart.part_Type] * RandExp((float)1 / ProductionTime1[machine.Machine_Type, currentPart.part_Type]);
+                    ProcessTime = Part_Num1[currentPart.part_Type] * P_Random(ProductionTime1[machine.Machine_Type, currentPart.part_Type], machine.Machine_Type);
                 }
                 else
                 {
@@ -461,14 +482,7 @@ namespace 工工综合实验模拟
             }
             else
             {
-                if (productionType == ProductionType.Random)
-                {
-                    ProcessTime = Part_Num2[currentPart.part_Type] * RandExp((float)1 / ProductionTime2[machine.Machine_Type, currentPart.part_Type]);
-                }
-                else
-                {
-                    ProcessTime = Part_Num2[currentPart.part_Type] * ProductionTime2[machine.Machine_Type, currentPart.part_Type];
-                }
+                ProcessTime = Part_Num2[currentPart.part_Type] * ProductionTime2[machine.Machine_Type, currentPart.part_Type];
                 ChangeTime = Part_Change2[lastPart.part_Type, currentPart.part_Type];
             }
             //计算部件的换模时间和加工时间的总和
