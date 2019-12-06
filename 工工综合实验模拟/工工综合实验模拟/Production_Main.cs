@@ -107,6 +107,7 @@ namespace 工工综合实验模拟
                 string[] InputString = InputTextBox.Text.Split(',');
                 string[] InputPrefer = partPrefer.Text.Split(',');
                 bool isvalid = true;
+                int stimulate_num = (int)numericUpDown1.Value;
 
                 int[] Sequence = new int[InputString.Length];
                 int[] Preference = new int[InputPrefer.Length];
@@ -168,7 +169,7 @@ namespace 工工综合实验模拟
                 if (isvalid)
                 {
                     ProductionSystem system = new ProductionSystem(Q_type, P_type,S_type, Sequence,Preference);
-                    system.stimulate(1);
+                    system.stimulate(stimulate_num);
                     Production_Result Output = new Production_Result(this,system.leaveTimes,system.Machine6Record)
                     {
                         StartPosition = FormStartPosition.CenterScreen
@@ -237,12 +238,14 @@ namespace 工工综合实验模拟
         public double   finished_Time;
         public double Machine_Scale;                                //机器的工作效率，机器6的两个机器能力不同
         public int last_part;                                       //机器加工的上一个部件
+        public ArrayList onholdParts;                                                          
         public Machine(int M_No,int M_type)
         { //构造函数，初始时设置机器为空闲
             status = MachineStatus.Vergin;
             Machine_No = M_No;
             Machine_Type = M_type;
             Machine_Scale = 1;
+            onholdParts = new ArrayList();
         }
         public void setBusy()//机器设置为繁忙
         {
@@ -409,30 +412,46 @@ namespace 工工综合实验模拟
         }
         void partArrive(Machine machine,int part_i)                     //部件上机事件
         {
-            Part currentPart = parts[part_i];
-            Part lastPart;
-
-            //换模时间的判定
-            if(machine.status == MachineStatus.Vergin)
+            double time = currentEvent.occur_time;
+            foreach (Part part in machine.onholdParts)
             {
-                lastPart = currentPart;
-            }
-            else
-            {
-                lastPart = parts[machine.last_part];
-            }
-            machine.last_part = part_i;
-            machine.setBusy();
+                Part currentPart = part;
+                Part lastPart;
 
+                //换模时间的判定
+                if (machine.status == MachineStatus.Vergin)
+                {
+                    lastPart = currentPart;
+                }
+                else
+                {
+                    lastPart = parts[machine.last_part];
+                }
+                machine.last_part = part.part_No;
+                machine.setBusy();
+                time += TimeCompute(machine, currentPart, lastPart);
+
+
+                //生成当前部件在当前机器的下机事件
+                P_Event down_Event = new P_Event(time, -1, machine.Machine_No, currentPart.part_No);
+                addEvent(events, down_Event);
+                machine.finished_Time = time;
+                leaveTimes[part.part_Type, machine.Machine_Type] += time;
+            }
+            machines[machine.Machine_No].onholdParts = new ArrayList();
+        }
+
+        private double TimeCompute(Machine machine, Part currentPart, Part lastPart)
+        {
             double ProcessTime = 0;
             double ChangeTime = 0;
-            
+
             if (problemType == ProblemType.small)
             {
                 if (productionType == ProductionType.Random)
                 {
 
-                    ProcessTime = Part_Num1[currentPart.part_Type]*RandExp((float)1/ProductionTime1[machine.Machine_Type, currentPart.part_Type]);
+                    ProcessTime = Part_Num1[currentPart.part_Type] * RandExp((float)1 / ProductionTime1[machine.Machine_Type, currentPart.part_Type]);
                 }
                 else
                 {
@@ -453,27 +472,10 @@ namespace 工工综合实验模拟
                 ChangeTime = Part_Change2[lastPart.part_Type, currentPart.part_Type];
             }
             //计算部件的换模时间和加工时间的总和
-            double time = currentEvent.occur_time + ChangeTime + ProcessTime*machine.Machine_Scale;
-            
-            
-            //生成当前部件在当前机器的下机事件
-            P_Event down_Event = new P_Event(time, -1, machine.Machine_No, currentPart.part_No);
-            addEvent(events, down_Event);
-            machine.finished_Time = time;
-
-            if (machine.Machine_Type == 0)
-            {
-                //如果是第一台机器，就顺便安排下一个部件的上机   
-                if (currentPart.part_No != parts.Length-1)
-                {
-                    P_Event up_Event = new P_Event(time, 1, machine.Machine_No, currentPart.part_No + 1);
-                    addEvent(events, up_Event);
-                    arriveTimes.Append(time);
-                }
-            }
-
-
+            double time = ChangeTime + ProcessTime * machine.Machine_Scale;
+            return time;
         }
+
         void partLeave(Machine current_machine, int part_i)             //下机事件
         {
             current_machine.setIdle();
@@ -537,23 +539,22 @@ namespace 工工综合实验模拟
 
                 if (currentEvent.occur_time < next_machine.finished_Time)
                 {
-                    time = next_machine.finished_Time;
+                    if (next_machine.onholdParts.Count < 1)
+                    {
+                        time = next_machine.finished_Time;
+                        addEvent(events, new P_Event(time, 1, next_machine.Machine_No, part_i));
+                    }                    
                 }
                 else
                 {
                     time = currentEvent.occur_time;
+                    addEvent(events, new P_Event(time, 1, next_machine.Machine_No, part_i));
                 }
-
-                leaveTimes[parts[part_i].part_Type, current_machine.Machine_Type] = currentEvent.occur_time;
-                
-                //若当前机器不是最后一个，则生成该工件在下一个机器的到达事件
-                P_Event up_Event = new P_Event(time, 1, next_machine.Machine_No, parts[part_i].part_No);
-                addEvent(events, up_Event);
+                machines[next_machine.Machine_No].onholdParts.Add(parts[part_i]);
             }
             else
             {
                 parts[part_i].part_status = PartStatus.Finished;        //表示工件已经加工完成
-                leaveTimes[parts[part_i].part_Type, Total_Machine_No-1] = currentEvent.occur_time;
             }
         }
 
@@ -573,6 +574,7 @@ namespace 工工综合实验模拟
             {
                 parts[i] = new Part(Parts_Sequence[i],Parts_Preference[i]);
                 parts[i].part_No = i;
+                machines[0].onholdParts.Add(parts[i]);
             }
             events.Add(new P_Event(0,1,parts[0].part_No,machines[0].Machine_No));
             arriveTimes=new double[] {0};
@@ -582,6 +584,13 @@ namespace 工工综合实验模拟
             for (int i = 0; i != stimulate_num; i++)
             {
                 run();
+            }
+            for (int i = 0; i!=Total_Parts_No;i++)
+            {               
+                for (int j =0; j != Total_Machine_No; j++)
+                {
+                    leaveTimes[i, j] = leaveTimes[i, j] / stimulate_num;
+                }
             }
         }
         void run()

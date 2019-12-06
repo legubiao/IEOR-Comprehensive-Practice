@@ -46,11 +46,16 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -81,13 +86,13 @@
             this.InputTextBox.Name = "InputTextBox";
             this.InputTextBox.Size = new System.Drawing.Size(455, 21);
             this.InputTextBox.TabIndex = 3;
-            this.InputTextBox.Text = "5,4,3,1,6,2,7";
+            this.InputTextBox.Text = "8,7,11,6,2,1,3,5,10,4,9,13,12,14,15\r\n";
             this.InputTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("幼圆", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.Location = new System.Drawing.Point(9, 227);
+            this.button3.Location = new System.Drawing.Point(9, 266);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(51, 32);
             this.button3.TabIndex = 64;
@@ -99,7 +104,7 @@
             // 
             this.StartButton.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.StartButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.StartButton.Location = new System.Drawing.Point(192, 225);
+            this.StartButton.Location = new System.Drawing.Point(192, 264);
             this.StartButton.Margin = new System.Windows.Forms.Padding(2);
             this.StartButton.Name = "StartButton";
             this.StartButton.Size = new System.Drawing.Size(90, 33);
@@ -110,7 +115,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(392, 227);
+            this.button4.Location = new System.Drawing.Point(392, 266);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(86, 32);
             this.button4.TabIndex = 63;
@@ -173,7 +178,7 @@
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(190, 20);
             this.comboBox2.TabIndex = 65;
-            this.comboBox2.Text = "7个工件";
+            this.comboBox2.Text = "15个工件";
             // 
             // label3
             // 
@@ -214,7 +219,7 @@
             this.partPrefer.Name = "partPrefer";
             this.partPrefer.Size = new System.Drawing.Size(455, 21);
             this.partPrefer.TabIndex = 3;
-            this.partPrefer.Text = "1,1,1,1,1,1,1";
+            this.partPrefer.Text = "1,1,1,2,1,2,2,1,1,1,1,2,1,1,1";
             // 
             // panel5
             // 
@@ -250,11 +255,55 @@
             this.label5.TabIndex = 4;
             this.label5.Text = "机器6偏好作用方式：";
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.numericUpDown1);
+            this.panel6.Controls.Add(this.label6);
+            this.panel6.Location = new System.Drawing.Point(9, 225);
+            this.panel6.Margin = new System.Windows.Forms.Padding(2);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(469, 30);
+            this.panel6.TabIndex = 69;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(162, 3);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            -727379968,
+            232,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(190, 21);
+            this.numericUpDown1.TabIndex = 6;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(2, 3);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(90, 21);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "模拟次数：";
+            // 
             // Production_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(487, 268);
+            this.ClientSize = new System.Drawing.Size(487, 310);
+            this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -276,6 +325,9 @@
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -299,5 +351,8 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }
