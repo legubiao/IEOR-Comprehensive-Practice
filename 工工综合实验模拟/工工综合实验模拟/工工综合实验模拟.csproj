@@ -61,17 +61,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hospital_Result.cs">
+    <Compile Include="Multi_Hospital_Result.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Hospital_Result.Designer.cs">
-      <DependentUpon>Hospital_Result.cs</DependentUpon>
+    <Compile Include="Multi_Hospital_Result.Designer.cs">
+      <DependentUpon>Multi_Hospital_Result.cs</DependentUpon>
     </Compile>
-    <Compile Include="Hospital_Main.cs">
+    <Compile Include="Multi_Hospital_Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Hospital_Main.Designer.cs">
-      <DependentUpon>Hospital_Main.cs</DependentUpon>
+    <Compile Include="Multi_Hospital_Main.Designer.cs">
+      <DependentUpon>Multi_Hospital_Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Main_Form.cs">
       <SubType>Form</SubType>
@@ -93,11 +93,17 @@
     <Compile Include="Production_Main.Designer.cs">
       <DependentUpon>Production_Main.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Hospital_Main.resx">
-      <DependentUpon>Hospital_Main.cs</DependentUpon>
+    <Compile Include="Single_Hospital_Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Single_Hospital_Main.Designer.cs">
+      <DependentUpon>Single_Hospital_Main.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Multi_Hospital_Main.resx">
+      <DependentUpon>Multi_Hospital_Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Hospital_Result.resx">
-      <DependentUpon>Hospital_Result.cs</DependentUpon>
+    <EmbeddedResource Include="Multi_Hospital_Result.resx">
+      <DependentUpon>Multi_Hospital_Result.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main_Form.resx">
       <DependentUpon>Main_Form.cs</DependentUpon>
@@ -116,6 +122,9 @@
     </Compile>
     <EmbeddedResource Include="Production_Main.resx">
       <DependentUpon>Production_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Single_Hospital_Main.resx">
+      <DependentUpon>Single_Hospital_Main.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

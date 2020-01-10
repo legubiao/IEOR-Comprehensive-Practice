@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace 工工综合实验模拟
 {
-    public partial class Hospital_Result : Form
+    public partial class Multi_Hospital_Result : Form
     {
-        public Hospital_Main returnForm = null;
-        public Hospital_Result(Hospital_Main hospital_Main,double[] avg_StayTime,double[] max_StayTime,
+        public Multi_Hospital_Main returnForm = null;
+        public Multi_Hospital_Result(Multi_Hospital_Main hospital_Main,double[] avg_StayTime,double[] max_StayTime,
             double[]avg_line_self,double[] avg_line_car, double[]avg_line_total,
             double[]max_line_self,double[] max_line_car, double[]max_line_total)
         {

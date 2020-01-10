@@ -11,10 +11,10 @@ using System.Collections;
 
 namespace 工工综合实验模拟
 {
-    public partial class Hospital_Main : Form
+    public partial class Multi_Hospital_Main : Form
     {
         public Main_Form returnForm = null;
-        public double[,] hosInfo = new double[,]
+        double[,] hosInfo = new double[,]
         {   //自行到达病人速率，单台病床服务速率，最大床位数，初始床位数
                    {3.4, 0.42, 40, 13, 13},
                    {3.6, 0.5,  40, 15, 15},
@@ -22,7 +22,7 @@ namespace 工工综合实验模拟
                    {4,   0.55, 40, 20, 20},
                    {3.6, 0.4,  40, 18, 18}
         };
-        public Hospital_Main(Main_Form mainForm)
+        public Multi_Hospital_Main(Main_Form mainForm)
         {
             this.returnForm = mainForm;
             InitializeComponent();
@@ -95,7 +95,7 @@ namespace 工工综合实验模拟
                 //如果仅运行一次，则弹出运行一次界面
                 if (simulate_num != 0)
                 {
-                    Hospital_Result Output1 = new Hospital_Result(this, avg_Stay_Time,max_Stay_Time,
+                    Multi_Hospital_Result Output1 = new Multi_Hospital_Result(this, avg_Stay_Time,max_Stay_Time,
                         avg_line_self,avg_line_car,avg_line_total,
                         max_line_self, max_line_car, max_line_total)
                     {
@@ -174,11 +174,9 @@ namespace 工工综合实验模拟
     class Patient
     {
         public double arriveTime;
-        public int hospital;
         public Patient(double ArriveTime)
         {
             arriveTime = ArriveTime;
-            hospital = 0;
         }
     }
     enum BedStatus
@@ -194,7 +192,7 @@ namespace 工工综合实验模拟
     class HospitalBed
     {
         private Patient patient;
-        private BedStatus status;
+        protected BedStatus status;
         public HospitalBed()
         { //构造函数，初始时设置床位为空闲
             status = BedStatus.IDLE;
@@ -220,7 +218,7 @@ namespace 工工综合实验模拟
             return (patient.arriveTime);
         }
     }
-    struct H_Event
+    class H_Event
     {
         public double occur_time;       //事件发生的时间
         public int EventType;           //描述事件的类型,-1、-2代表到达事件，否则代表床位的编号

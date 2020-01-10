@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class Hospital_Main
+    partial class Multi_Hospital_Main
     {
         /// <summary>
         /// Required designer variable.
@@ -688,7 +688,7 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
-            // Hospital_Main
+            // Multi_Hospital_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -699,8 +699,8 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button2);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "Hospital_Main";
-            this.Text = "医院问题模拟";
+            this.Name = "Multi_Hospital_Main";
+            this.Text = "多医院问题模拟";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();

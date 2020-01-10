@@ -20,7 +20,7 @@ namespace 工工综合实验模拟
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            Hospital_Main hospital = new Hospital_Main(this)
+            Multi_Hospital_Main hospital = new Multi_Hospital_Main(this)
             {
                 StartPosition = FormStartPosition.CenterScreen
             };
@@ -36,6 +36,16 @@ namespace 工工综合实验模拟
             };
             this.Hide();
             production.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Single_Hospital_Main single_Hospital = new Single_Hospital_Main(this)
+            {
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            this.Hide();
+            single_Hospital.Show();
         }
     }
 

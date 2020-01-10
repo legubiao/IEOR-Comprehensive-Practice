@@ -1,6 +1,6 @@
 ﻿namespace 工工综合实验模拟
 {
-    partial class Hospital_Result
+    partial class Multi_Hospital_Result
     {
         /// <summary>
         /// Required designer variable.
@@ -93,7 +93,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(387, 188);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 29);
             this.button1.TabIndex = 0;
@@ -114,7 +114,7 @@
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.Label1);
             this.panel1.Location = new System.Drawing.Point(1, 2);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(496, 184);
             this.panel1.TabIndex = 1;
@@ -124,7 +124,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(83, 24);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(408, 154);
@@ -153,9 +153,9 @@
             this.tabPage1.Controls.Add(this.Avg_Selfline1);
             this.tabPage1.Controls.Add(this.Hos1_AvgTime);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(400, 125);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "平均";
@@ -384,9 +384,9 @@
             this.tabPage2.Controls.Add(this.Max_Selfline1);
             this.tabPage2.Controls.Add(this.Hos1_MaxTime);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(400, 125);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "最大";
@@ -709,7 +709,7 @@
             this.label2.TabIndex = 25;
             this.label2.Text = "目标值";
             // 
-            // Hospital_Once
+            // Multi_Hospital_Result
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -718,9 +718,9 @@
             this.Controls.Add(this.TargetValue);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "Hospital_Once";
-            this.Text = "模拟结果——单次运行";
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "Multi_Hospital_Result";
+            this.Text = "多医院模拟结果";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
