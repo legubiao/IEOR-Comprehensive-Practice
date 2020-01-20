@@ -99,6 +99,12 @@
     <Compile Include="Single_Hospital_Main.Designer.cs">
       <DependentUpon>Single_Hospital_Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Single_Hospital_Result.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Single_Hospital_Result.Designer.cs">
+      <DependentUpon>Single_Hospital_Result.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Multi_Hospital_Main.resx">
       <DependentUpon>Multi_Hospital_Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,6 +131,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Single_Hospital_Main.resx">
       <DependentUpon>Single_Hospital_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Single_Hospital_Result.resx">
+      <DependentUpon>Single_Hospital_Result.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
