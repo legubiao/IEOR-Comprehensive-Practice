@@ -51,6 +51,11 @@
             // stiDays
             // 
             this.stiDays.Location = new System.Drawing.Point(144, 23);
+            this.stiDays.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this.stiDays.Name = "stiDays";
             this.stiDays.Size = new System.Drawing.Size(120, 25);
             this.stiDays.TabIndex = 1;

@@ -27,9 +27,9 @@ namespace 工工综合实验模拟
             {
                 DataRow dr = dt.NewRow();
                 dr[0] = i+1;
-                dr[1] = ((double)(total[i]-sl1[i]) / total[i]).ToString("0.00000");
-                dr[2] = ((double)(total[i]-sl2[i])/ total[i]).ToString("0.00000");
-                dr[3] = ((double)(total[i]-sl3[i])/ total[i]).ToString("0.00000");
+                dr[1] = ((double)(total[i]-sl1[i]) / total[i]).ToString("0.0000000");
+                dr[2] = ((double)(total[i]-sl2[i])/ total[i]).ToString("0.0000000");
+                dr[3] = ((double)(total[i]-sl3[i])/ total[i]).ToString("0.0000000");
                 dt.Rows.Add(dr);
             }
             dataGridView1.DataSource = dt;
