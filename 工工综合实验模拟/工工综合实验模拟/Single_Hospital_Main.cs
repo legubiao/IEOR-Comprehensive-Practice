@@ -41,6 +41,7 @@ namespace 工工综合实验模拟
         private void button2_Click(object sender, EventArgs e)
         {
             int simulate_num = int.Parse(stiDays.Text);           // 模拟次数
+            int Seed = int.Parse(randomSeed.Text);                // 随机数种子
             double miu;
             int[] lambda = new int[24];
             int[] beds_num = new int[24];
@@ -76,7 +77,7 @@ namespace 工工综合实验模拟
                     switchRule = 2;
                     break;
             }
-            S_QueueSystem system = new S_QueueSystem(miu,lambda,beds_num,switchRule);
+            S_QueueSystem system = new S_QueueSystem(miu,lambda,beds_num,switchRule,Seed);
             system.stimulate(simulate_num);
             Single_Hospital_Result Output = new Single_Hospital_Result (this,system.patientCount,system.sl1,system.sl2,system.sl3)
             {
@@ -142,6 +143,7 @@ namespace 工工综合实验模拟
             public int[] sl3 = new int[24];                                        //不满足服务水平3的数量
 
             int switchRule;
+            int seed;
             int[] beds_num = new int[24];                                   //各个时间段病床的数量
             int[] lambda = new int[24];                                     //各个时间段病人的平均到达数目
             double miu;                                                     //单个服务台服务速率
@@ -150,7 +152,8 @@ namespace 工工综合实验模拟
 
             public double RandExp(double lambda)                           //此处的const_a是指数分布的那个参数λ
             {
-                Random rand = new Random(Guid.NewGuid().GetHashCode());
+                //Random rand = new Random(Guid.NewGuid().GetHashCode());
+                Random rand = new Random(seed);
                 double pV = 0.0;
                 while (true)
                 {
@@ -445,12 +448,20 @@ namespace 工工综合实验模拟
                     run();
                 }
             }
-            public S_QueueSystem(double miu,int[] lambda,int[]beds_num,int switchRule)
+            public S_QueueSystem(double miu,int[] lambda,int[]beds_num,int switchRule,int seed)
             {
                 this.miu = miu;
                 this.lambda = lambda;
                 this.beds_num = beds_num;
                 this.switchRule = switchRule;
+                if (seed == 0)
+                {
+                    this.seed = Guid.NewGuid().GetHashCode();
+                }
+                else
+                {
+                    this.seed = seed;
+                }
             }
         }
     }

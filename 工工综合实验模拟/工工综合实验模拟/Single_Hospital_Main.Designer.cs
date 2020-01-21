@@ -36,7 +36,10 @@
             this.ruleSwitch = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.randomSeed = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.stiDays)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.randomSeed)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -71,7 +74,7 @@
             this.dataSwitch.Items.AddRange(new object[] {
             "数据1",
             "数据2"});
-            this.dataSwitch.Location = new System.Drawing.Point(144, 65);
+            this.dataSwitch.Location = new System.Drawing.Point(144, 99);
             this.dataSwitch.Name = "dataSwitch";
             this.dataSwitch.Size = new System.Drawing.Size(121, 23);
             this.dataSwitch.TabIndex = 2;
@@ -80,7 +83,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(70, 68);
+            this.label2.Location = new System.Drawing.Point(70, 102);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 15);
             this.label2.TabIndex = 3;
@@ -89,7 +92,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(70, 106);
+            this.label3.Location = new System.Drawing.Point(70, 140);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(67, 15);
             this.label3.TabIndex = 4;
@@ -102,7 +105,7 @@
             "规则1",
             "规则2",
             "规则3"});
-            this.ruleSwitch.Location = new System.Drawing.Point(144, 102);
+            this.ruleSwitch.Location = new System.Drawing.Point(144, 136);
             this.ruleSwitch.Name = "ruleSwitch";
             this.ruleSwitch.Size = new System.Drawing.Size(121, 23);
             this.ruleSwitch.TabIndex = 5;
@@ -110,7 +113,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(115, 193);
+            this.button1.Location = new System.Drawing.Point(114, 244);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(97, 36);
             this.button1.TabIndex = 6;
@@ -120,7 +123,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(112, 152);
+            this.button2.Location = new System.Drawing.Point(111, 203);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 35);
             this.button2.TabIndex = 7;
@@ -128,11 +131,39 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // randomSeed
+            // 
+            this.randomSeed.Location = new System.Drawing.Point(144, 58);
+            this.randomSeed.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.randomSeed.Name = "randomSeed";
+            this.randomSeed.Size = new System.Drawing.Size(120, 25);
+            this.randomSeed.TabIndex = 9;
+            this.randomSeed.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(70, 63);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(67, 15);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "随机种子";
+            // 
             // Single_Hospital_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(340, 259);
+            this.ClientSize = new System.Drawing.Size(340, 292);
+            this.Controls.Add(this.randomSeed);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.ruleSwitch);
@@ -144,6 +175,7 @@
             this.Name = "Single_Hospital_Main";
             this.Text = "单医院问题模拟";
             ((System.ComponentModel.ISupportInitialize)(this.stiDays)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.randomSeed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,5 +191,7 @@
         private System.Windows.Forms.ComboBox ruleSwitch;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.NumericUpDown randomSeed;
+        private System.Windows.Forms.Label label4;
     }
 }
