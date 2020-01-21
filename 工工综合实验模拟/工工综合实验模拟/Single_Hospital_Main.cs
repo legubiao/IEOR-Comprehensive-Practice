@@ -392,7 +392,6 @@ namespace 工工综合实验模拟
                                     break;
                                 case 2:
                                     //正在服务中的服务台完成当前顾客的服务后下班
-                                    S_Patient Patient_2 = beds[currentEvent.EventType].returnPatient();
                                     if (rePatient.totalTime > 0.5)
                                     {
                                         sl3[(int)rePatient.arriveTime] += 1;
