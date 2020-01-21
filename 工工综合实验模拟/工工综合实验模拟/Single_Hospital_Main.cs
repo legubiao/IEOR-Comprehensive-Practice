@@ -152,9 +152,16 @@ namespace 工工综合实验模拟
 
             public double RandExp(double lambda)                           //此处的const_a是指数分布的那个参数λ
             {
-                //Random rand = new Random(Guid.NewGuid().GetHashCode());
-                Random rand = new Random(seed);
-                double pV = 0.0;
+                Random rand;
+                if (seed != 0)
+                {
+                    rand = new Random(seed);
+                }
+                else
+                {
+                    rand = new Random(Guid.NewGuid().GetHashCode());
+                }
+                    double pV = 0.0;
                 while (true)
                 {
                     pV = rand.NextDouble();
@@ -454,14 +461,6 @@ namespace 工工综合实验模拟
                 this.lambda = lambda;
                 this.beds_num = beds_num;
                 this.switchRule = switchRule;
-                if (seed == 0)
-                {
-                    this.seed = Guid.NewGuid().GetHashCode();
-                }
-                else
-                {
-                    this.seed = seed;
-                }
             }
         }
     }
