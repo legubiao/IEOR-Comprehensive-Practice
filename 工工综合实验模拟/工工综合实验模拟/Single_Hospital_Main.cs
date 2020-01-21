@@ -198,13 +198,10 @@ namespace 工工综合实验模拟
                 }
                 for (int i = 1; i != 24; i++)
                 {
-                    if (beds_num[i - 1] != beds_num[i])
-                    {
-                        //初始配置改变床位相关的事件
-                        S_Event temp_event = new S_Event(i, -2);
-                        temp_event.switchValue = beds_num[i] - beds_num[i - 1];
-                        addEvent(events, temp_event);
-                    }
+                    //初始配置改变床位相关的事件
+                    S_Event temp_event = new S_Event(i, -2);
+                    temp_event.switchValue = beds_num[i] - beds_num[i - 1];
+                    addEvent(events, temp_event);                   
                 }
             }
             void reset()
@@ -341,7 +338,7 @@ namespace 工工综合实验模拟
                         beds.Add(new S_Beds());
                     }
                 }
-                else
+                else if (amount < 0)
                 {                                                           //减少床位
                     Random rand = new Random();
                     for (int i = 0; i != (-amount); i++)
@@ -408,6 +405,17 @@ namespace 工工综合实验模拟
                                 events[j].EventType -= 1;
                             }
                         }
+                    }
+                }
+                for (int j = 0; j != events.Count; j++)
+                {
+                    if (events[j].EventType == -1)
+                    {
+                        S_Event newEvent = events[j];
+                        newEvent.occur_time = currentEvent.occur_time;
+                        events.RemoveAt(j);
+                        addEvent(events, newEvent);
+                        break;
                     }
                 }
             }
